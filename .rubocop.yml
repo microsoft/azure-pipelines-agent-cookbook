@@ -1,0 +1,13 @@
+LineLength:
+  Max: 300
+
+Style/AlignParameters:
+  Exclude:
+    - '**/metadata.rb'
+
+Style/SingleSpaceBeforeFirstArg:
+  Exclude:
+    - '**/metadata.rb'
+
+HashSyntax:
+  EnforcedStyle: hash_rockets

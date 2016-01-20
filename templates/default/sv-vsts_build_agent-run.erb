@@ -1,0 +1,11 @@
+#!/bin/sh
+
+ulimit -Hn 65550
+ulimit -Sn 65550
+
+exec 2>&1
+cd <%= @options[:agent].install_dir %>
+exec env <% unless @options[:agent].sv_envs.empty? -%><%= @options[:agent].sv_envs.map{|k,v| "#{k}=#{v}"}.join(' ') %><% end -%> \
+chpst -u <%= @options[:agent].user %>:<%= @options[:agent].group %> \
+      -U <%= @options[:agent].user %>:<%= @options[:agent].group %> \
+      node ./agent/vsoagent.js -u <%= @options[:agent].vsts_user %> -p <%= @options[:agent].vsts_token %>

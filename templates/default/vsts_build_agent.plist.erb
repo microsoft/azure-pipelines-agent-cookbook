@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string><%= @agent.sv_name %></string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>node</string>
+      <string><%= @agent.install_dir %>/agent/vsoagent.js</string>
+      <string>-u</string>
+      <string><%= @agent.vsts_user %> </string>
+      <string>-p</string>
+      <string><%= @agent.vsts_token %></string>
+    </array>
+    <key>UserName</key>
+    <string><%= @agent.user %></string>
+
+    <% if @session -%>
+    <key>LimitLoadToSessionType</key>
+	  <string><%= @agent.sv_session %></string>
+    <% end -%>
+
+    <key>WorkingDirectory</key>
+    <string><%= @agent.install_dir %></string>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string><%= @agent.install_dir %>/service.log</string>
+    <key>StandardErrorPath</key>
+    <string><%= @agent.install_dir %>/service.err.log</string>
+
+    <% unless @agent.sv_envs.empty? -%>
+    <key>EnvironmentVariables</key>
+	  <dict>
+      <% @agent.sv_envs.each do |key, val| -%>
+		   <key><%= key %></key>
+		   <string><%= val %></string>
+	    <% end -%>
+     </dict>
+     <% end -%>
+
+  </dict>
+</plist>

@@ -1,0 +1,87 @@
+---
+driver:
+  name: vagrant
+  gui: true
+  customize:
+    cpus: 2
+    memory: 1024
+
+provisioner:
+  name: chef_zero
+  client_rb:
+      add_formatter: doc
+
+platforms:
+  - name: debian7
+    driver_config:
+      box: debian7
+    provisioner:
+      require_chef_omnibus: 11.18.6
+
+  - name: ubuntu1404
+    driver_config:
+      box: ubuntu/trusty64
+    provisioner:
+      require_chef_omnibus: 12.4.3
+
+  - name: centos6
+    driver_config:
+      box: bento/centos-6.7
+    provisioner:
+      require_chef_omnibus: 12.4.3
+
+# private boxes
+  - name: osx109-desktop
+    driver_config:
+      box: osx109-desktop #private
+    provisioner:
+      require_chef_omnibus: 12.4.3
+
+  - name: windows10
+    driver_config:
+      guest: windows
+      communicator: 'winrm'
+      box: win10x64-enterprise #private
+    provisioner:
+      require_chef_omnibus: 12.4.3
+
+  - name: windows81
+    driver_config:
+      guest: windows
+      communicator: 'winrm'
+      box: win81x64-enterprise #private
+    provisioner:
+      require_chef_omnibus: 11.18.6
+
+
+suites:
+  - name: xplat-basic
+    run_list:
+      - recipe[xplat-basic::default]
+    includes:
+      - debian7
+      - ubuntu1404
+      - centos6
+      - osx109-desktop
+
+    attributes:
+        vsts_build_agent_test:
+            vsts_url: <%= ENV['VSTS_URL'] %>
+            vsts_pool: <%= ENV['VSTS_POOL'] %>
+            vsts_user: <%= ENV['VSTS_USER'] %>
+            vsts_token: <%= ENV['VSTS_TOKEN'] %>
+
+
+  - name: windows-basic
+    run_list:
+      - recipe[windows-basic::default]
+    includes:
+      - windows10
+      - windows81
+
+    attributes:
+        vsts_build_agent_test:
+            vsts_url: <%= ENV['VSTS_URL'] %>
+            vsts_pool: <%= ENV['VSTS_POOL'] %>
+            vsts_user: <%= ENV['VSTS_USER'] %>
+            vsts_token: <%= ENV['VSTS_TOKEN'] %>
