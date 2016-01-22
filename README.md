@@ -1,6 +1,6 @@
 Visual Studio Team Services Build Agent Cookbook
 ================
-Installs and configures Visual Studio Team Services [Build Agents](https://www.visualstudio.com/en-us/get-started/build/build-your-app-vs) (a.k.a VSO Build Agents)
+Installs and configures Visual Studio Team Services [Build Agent](https://www.visualstudio.com/en-us/get-started/build/build-your-app-vs) (a.k.a VSO Build Agent)
 
 Requirements
 ------------
@@ -34,25 +34,25 @@ Resource/Provider
 ### windows
 This resource installs and configures a build agent on windows host
 #### Actions
-- :install: Install and configure a build agent
-- :remove: Remove a build agent and unregister it from VSTS
-- :restart: Restart a build agent service
+- `:install`: Install and configure a build agent
+- `:remove`: Remove a build agent and unregister it from VSTS
+- `:restart`: Restart a build agent service
 
 #### Parameters
-- agent_name: Name attribute. The name of a build agent
-- install_dir: A target directory to install a build agent
-- sv_name: Set a windows service name. Default vsoagent.host.agent_name
-- sv_user: Set a user name to run windows service. Possible values are "NT AUTHORITY\\NetworkService", "NT AUTHORITY\\LocalService" or any system valid username
-- sv_password: Set password with sv_user unless it is equal to NetworkService or LocalService
-- vsts_url: A target VSTS url
-- vsts_user: A user to connect with VSTS
-- vsts_token: A personal access token from VSTS. [See](http://roadtoalm.com/2015/07/22/using-personal-access-tokens-to-access-visual-studio-online/)
-- vsts_pool: A pool name on VSTS
-- work_folder: Set different workspace location. Default is "install_dir/\_work"
+- `agent_name`: Name attribute. The name of a build agent
+- `install_dir`: A target directory to install a build agent
+- `sv_name`: Set a windows service name. Default vsoagent.host.agent_name
+- `sv_user`: Set a user name to run windows service. Possible values are "NT AUTHORITY\\NetworkService", "NT AUTHORITY\\LocalService" or any system valid username
+- `sv_password`: Set password with sv_user unless it is equal to NetworkService or LocalService
+- `vsts_url`: A target VSTS url
+- `vsts_user`: A user to connect with VSTS
+- `vsts_token`: A personal access token from VSTS. [See](http://roadtoalm.com/2015/07/22/using-personal-access-tokens-to-access-visual-studio-online/)
+- `vsts_pool`: A pool name on VSTS
+- `work_folder`: Set different workspace location. Default is "install_dir/\_work"
 
 #### Examples
 Install, configure, restart and remove a build agent.
-Check [tests](test/cookbooks/basic/recipes/xplat.rb) for more examples.
+Check [tests](test/cookbooks/windows-basic/recipes/default.rb) for more examples.
 
 ```ruby
 include_recipe 'vsts_build_agent::default'
@@ -81,26 +81,26 @@ end
 ### xplat
 This resource installs and configures a build agent on linux or macosx host
 #### Actions
-- :install: Install and configure a build agent
-- :remove: Remove a build agent and unregister it from VSTS
-- :restart: Restart a build agent service
+- `:install`: Install and configure a build agent
+- `:remove`: Remove a build agent and unregister it from VSTS
+- `:restart`: Restart a build agent service
 
 #### Parameters
-- agent_name: Name attribute. The name of build agent
-- install_dir: A target directory to install build agent
-- user: Set a user to run build agent.
-- group: Set a group to run build agent.
-- sv_name: Set a service name. Default vsoagent.host.agent_name
-- sv_envs: Set hash of environment variables to pass into an agent process
-- sv_session: For MacOsX only. Set a LaunchAgent session.
-- vsts_url: A target VSTS url
-- vsts_user: A user to connect with VSTS
-- vsts_token: A personal access token from VSTS. [See](http://roadtoalm.com/2015/07/22/using-personal-access-tokens-to-access-visual-studio-online/)
-- vsts_pool: A pool name on VSTS
+- `agent_name`: Name attribute. The name of build agent
+- `install_dir`: A target directory to install build agent
+- `user`: Set a user to run build agent.
+- `group`: Set a group to run build agent.
+- `sv_name`: Set a service name. Default vsoagent.host.agent_name
+- `sv_envs`: Set hash of environment variables to pass into an agent process
+- `sv_session`: For MacOsX only. Set a LaunchAgent session.
+- `vsts_url`: A target VSTS url
+- `vsts_user`: A user to connect with VSTS
+- `vsts_token`: A personal access token from VSTS. [See](http://roadtoalm.com/2015/07/22/using-personal-access-tokens-to-access-visual-studio-online/)
+- `vsts_pool`: A pool name on VSTS
 
 #### Examples
 Install, configure, restart and remove build agent.
-Check [tests](test/cookbooks/basic/recipes/windows.rb) for more examples.
+Check [tests](test/cookbooks/xplat-basic/recipes/default.rb) for more examples.
 
 ```ruby
 include_recipe 'vsts_build_agent::default'

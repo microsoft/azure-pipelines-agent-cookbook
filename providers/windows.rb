@@ -12,10 +12,8 @@ def load_current_resource
   @current_resource = Chef::Resource::VstsBuildAgentWindows.new(@new_resource.name)
   @current_resource.agent_name(@new_resource.agent_name)
   @current_resource.exists = false
-
   load_current_state(@current_resource, node)
   @new_resource.sv_name(service_name(@new_resource))
-
   if agent_installed?(@current_resource, node)
     @current_resource.vsts_token(@new_resource.vsts_token)
     @current_resource.exists = true
