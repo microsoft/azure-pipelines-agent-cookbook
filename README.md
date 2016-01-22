@@ -1,5 +1,8 @@
 Visual Studio Team Services Build Agent Cookbook
 ================
+[![Build Status](https://travis-ci.org/Microsoft/vsts-build-agent-cookbook.svg?branch=master)](https://travis-ci.org/Microsoft/vsts-build-agent-cookbook)
+[![Cookbook Version](https://img.shields.io/cookbook/v/vsts_build_agent.svg)](https://supermarket.chef.io/cookbooks/vsts_build_agent)
+
 Installs and configures Visual Studio Team Services [Build Agent](https://www.visualstudio.com/en-us/get-started/build/build-your-app-vs) (a.k.a VSO Build Agent)
 
 Requirements
