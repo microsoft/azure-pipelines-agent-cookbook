@@ -1,5 +1,7 @@
 Visual Studio Team Services Build Agent Cookbook
 ================
+
+[![Join the chat at https://gitter.im/Microsoft/vsts-build-agent-cookbook](https://badges.gitter.im/Microsoft/vsts-build-agent-cookbook.svg)](https://gitter.im/Microsoft/vsts-build-agent-cookbook?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/Microsoft/vsts-build-agent-cookbook.svg?branch=master)](https://travis-ci.org/Microsoft/vsts-build-agent-cookbook)
 [![Cookbook Version](https://img.shields.io/cookbook/v/vsts_build_agent.svg)](https://supermarket.chef.io/cookbooks/vsts_build_agent)
 
