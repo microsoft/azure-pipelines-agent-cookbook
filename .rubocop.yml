@@ -5,7 +5,7 @@ Style/AlignParameters:
   Exclude:
     - '**/metadata.rb'
 
-Style/SingleSpaceBeforeFirstArg:
+Style/SpaceBeforeFirstArg:
   Exclude:
     - '**/metadata.rb'
 
