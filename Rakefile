@@ -25,6 +25,6 @@ namespace :kitchen do
   end
 end
 
-task :default =>  ['style', 'kitchen:linux']
+task :default => ['style', 'kitchen:linux']
 
 task :travis => ['style']

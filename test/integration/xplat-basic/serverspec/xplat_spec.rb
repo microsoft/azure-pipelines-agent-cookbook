@@ -2,11 +2,11 @@ require 'serverspec'
 
 set :backend, :exec
 
-if os[:family] == 'darwin'
-  home_dir = '/Users/vagrant'
-else
-  home_dir = '/home/vagrant'
-end
+home_dir = if os[:family] == 'darwin'
+             '/Users/vagrant'
+           else
+             '/home/vagrant'
+           end
 
 describe file("#{home_dir}/agents/agent_01/.agent") do
   it { should_not exist }

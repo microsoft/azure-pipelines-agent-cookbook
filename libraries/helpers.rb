@@ -5,7 +5,7 @@ module VSTS
     module Agent
       # Helper methods for VSTS Build Agent installation
       module Helpers
-        VARS_TO_SAVE = %w(vsts_url vsts_pool vsts_user install_dir sv_name sv_session user group user_home)
+        VARS_TO_SAVE = %w(vsts_url vsts_pool vsts_user install_dir sv_name sv_session user group user_home).freeze
 
         def agent_installed?(resource, node)
           agent_attribute?(resource.agent_name, node) &&
@@ -53,11 +53,11 @@ module VSTS
         end
 
         def plist_path(resource)
-          if resource.sv_session
-            path = "/Library/LaunchAgents/#{resource.sv_name}.plist"
-          else
-            path = "/Library/LaunchDaemons/#{resource.sv_name}.plist"
-          end
+          path = if resource.sv_session
+                   "/Library/LaunchAgents/#{resource.sv_name}.plist"
+                 else
+                   "/Library/LaunchDaemons/#{resource.sv_name}.plist"
+                 end
 
           path = "#{resource.user_home}#{path}" if resource.user_home
           path
