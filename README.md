@@ -7,6 +7,8 @@ Visual Studio Team Services Build Agent Cookbook
 
 Installs and configures Visual Studio Team Services [Build Agent](https://www.visualstudio.com/en-us/get-started/build/build-your-app-vs) (a.k.a VSO Build Agent)
 
+Please check [Wiki](https://github.com/Microsoft/vsts-build-agent-cookbook/wiki) for more examples
+
 Requirements
 ------------
 - Chef 11 or higher
