@@ -1,3 +1,7 @@
-if %w(debian rhel fedora gentoo).include?(node['platform_family'])
-  include_recipe 'runit::default'
+include_recipe 'ark::default'
+
+if platform_family?('debian')
+  package 'libunwind8' do
+    action :install
+  end
 end

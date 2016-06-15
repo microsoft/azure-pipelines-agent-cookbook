@@ -5,6 +5,3 @@ depends 'vsts_build_agent'
 
 depends 'apt'
 depends 'build-essential'
-depends 'nodejs'
-depends 'runit'
-depends 'homebrew'

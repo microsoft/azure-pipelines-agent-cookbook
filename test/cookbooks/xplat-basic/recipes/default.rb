@@ -1,94 +1,85 @@
-
+#### Begin prepare system ####
 include_recipe 'apt::default' if platform_family?('debian')
 
-include_recipe 'vsts_build_agent::default'
+if platform_family?('windows')
+   
+  cookbook_file "#{Chef::Config[:file_cache_path]}/Grant-LogOnAsService.ps1" do
+      source 'Grant-LogOnAsService.ps1'
+      action :create_if_missing
+  end
 
-include_recipe 'build-essential::default'
+  # grant ServiceLogon rights
+  batch "grant servicelogon rights to vagrant" do
+      cwd Chef::Config[:file_cache_path]
+      code <<-EOH
+          powershell -ExecutionPolicy Bypass ./Grant-LogOnAsService.ps1 -userAlias vagrant 
+          if %ERRORLEVEL% == 0 echo "Service logon access to vagrant granted" > "#{Chef::Config[:file_cache_path]}\\logon.guard"
+      EOH
+      not_if {::File.exists?("#{Chef::Config[:file_cache_path]}\\logon.guard")}
+  end
+  
+end
+include_recipe 'build-essential::default' unless platform_family?('windows')
+
+#### End prepare system ####
+
 include_recipe 'vsts_build_agent::default'
 
 agent1_name = "#{node['hostname']}_01"
 agent2_name = "#{node['hostname']}_02"
 
-if platform_family?('mac_os_x')
-  home_dir = '/Users/vagrant'
+agents_dir = '/home/vagrant/agents'
+agents_dir = '/Users/vagrant/agents' if platform_family?('mac_os_x')
+agents_dir = 'C:\\Users\\vagrant\\agents' if platform_family?('windows')
 
-  bash 'Prepare dirs for the homebrew' do
-    code <<-EOH
-      mkdir -p /usr/local
-      chown -R vagrant:staff /usr/local
-      EOH
-  end
 
-  node.set['homebrew']['owner'] = 'vagrant'
-  include_recipe 'homebrew'
-
-  execute 'Install nodejs from brew' do
-    command 'brew install node'
-    user 'vagrant'
-    group 'staff'
-    action :run
-  end
-
-else
-  home_dir = '/home/vagrant'
-  include_recipe 'nodejs::default'
-  include_recipe 'nodejs::npm'
-  execute 'Set npm global prefix' do
-    command 'npm config set prefix /usr/local'
-  end
-end
-
-# # cleanup
-vsts_build_agent_xplat agent1_name do
+# cleanup
+vsts_build_agent agent1_name do
   vsts_token node['vsts_build_agent_test']['vsts_token']
   action :remove
 end
 
-vsts_build_agent_xplat agent2_name do
+vsts_build_agent agent2_name do
   vsts_token node['vsts_build_agent_test']['vsts_token']
   action :remove
 end
 
-vsts_build_agent_xplat agent1_name do
-  install_dir "#{home_dir}/agents/agent_01"
+# Agent1
+vsts_build_agent agent1_name do
+  version '2.102.0'
+  install_dir "#{agents_dir}/#{agent1_name}"
   user 'vagrant'
   group 'vagrant'
-  sv_envs(
-    'PATH' => '/usr/local/bin/:/opt/local/bin:/sbin:/usr/sbin:/bin:/usr/bin',
-    'TEST' => 'agent1'
-  )
   vsts_url node['vsts_build_agent_test']['vsts_url']
   vsts_pool node['vsts_build_agent_test']['vsts_pool']
-  vsts_user node['vsts_build_agent_test']['vsts_user']
   vsts_token node['vsts_build_agent_test']['vsts_token']
+  windowslogonaccount 'vagrant'
+  windowslogonpassword 'vagrant'
   action :install
 end
 
-vsts_build_agent_xplat agent2_name do
-  install_dir "#{home_dir}/agents/agent_02"
-  user 'vagrant'
-  group 'vagrant'
-  user_home home_dir
-  sv_name 'agent2'
-  sv_envs(
-    'PATH' => '/usr/local/bin/:/opt/local/bin:/sbin:/usr/sbin:/bin:/usr/bin',
-    'TEST' => 'agent2'
-  )
-  vsts_url node['vsts_build_agent_test']['vsts_url']
-  vsts_pool node['vsts_build_agent_test']['vsts_pool']
-  vsts_user node['vsts_build_agent_test']['vsts_user']
-  vsts_token node['vsts_build_agent_test']['vsts_token']
-  action :install
-  notifies :restart, "vsts_build_agent_xplat[#{agent2_name}]", :delayed
-end
-
-vsts_build_agent_xplat "Restart '#{agent1_name}'" do
-  agent_name agent1_name
+vsts_build_agent agent1_name do
   action :restart
 end
 
-vsts_build_agent_xplat "Remove '#{agent1_name}'" do
-  agent_name agent1_name
+vsts_build_agent agent1_name do
   vsts_token node['vsts_build_agent_test']['vsts_token']
   action :remove
+end
+
+# Agent2
+vsts_build_agent agent2_name do
+  version '2.102.0'
+  install_dir "#{agents_dir}/#{agent2_name}"
+  user 'vagrant'
+  group 'vagrant'
+  vsts_url node['vsts_build_agent_test']['vsts_url']
+  vsts_pool node['vsts_build_agent_test']['vsts_pool']
+  vsts_token node['vsts_build_agent_test']['vsts_token']
+  windowslogonaccount 'NT AUTHORITY\\NetworkService'
+  action :install
+end
+
+vsts_build_agent agent2_name do
+  action :restart
 end

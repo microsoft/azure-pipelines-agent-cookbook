@@ -1,50 +1,82 @@
-
-
 module VSTS
   module Build
     module Agent
       # Helper methods for VSTS Build Agent installation
       module Helpers
-        VARS_TO_SAVE = %w(vsts_url vsts_pool vsts_user install_dir sv_name sv_session user group user_home).freeze
-
-        def agent_installed?(resource, node)
-          agent_attribute?(resource.agent_name, node) &&
-            (::File.exist?("#{resource.install_dir}/.agent") ||
-             ::File.file?("#{resource.install_dir}\\Agent\\VsoAgent.exe"))
-        end
-
+        include Chef::DSL::PlatformIntrospection
+        
+        require 'json'
+        
+        # def agent_installed?(resource, node) 
+        #   agent_attribute?(resource.agent_name, node) && (::File.exist?("#{resource.install_dir}/.Agent"))
+        # end
+        
         def service_name(resource)
-          return resource.sv_name if resource.sv_name
           return nil unless resource.vsts_url
           hostname = URI.parse(resource.vsts_url).host
           hostname = hostname[0, hostname.index('.')] if hostname.include?('.')
-          "vsoagent.#{hostname}.#{resource.agent_name}"
-        end
-
-        def get_npm_install_cmd(node)
-          npm_cmd = "npm install -global #{node['vsts_build_agent']['xplat']['package_name']}"
-          unless node['vsts_build_agent']['xplat']['package_version'] == 'latest'
-            npm_cmd += "@#{node['vsts_build_agent']['xplat']['package_version']}"
+          if windows?
+            "vstsagent.#{hostname}.#{resource.agent_name}"
+          else
+            "vsts.agent.#{hostname}.#{resource.agent_name}"
           end
-          npm_cmd
+        end
+        
+        def archive_name(resource)
+          name = "vsts_build_agent"
+          name += "_" + resource.version if resource.version
+          name
+        end
+        
+        def download_url(version, node)
+          url = node['vsts_build_agent']['binary']['url']
+          url = url.gsub '%s', version
+          url
+        end
+        
+        def windows?
+          platform_family?('windows')
+        end
+        
+        def debian?
+          platform_family?('debian')
+        end
+        
+        def rhel?
+          platform_family?('rhel')
+        end
+        
+        def mac_os_x?
+          platform_family?('mac_os_x') || platform_family?('mac_os_x_server')
         end
 
         def save_current_state(resource, node)
-          VARS_TO_SAVE.each do |var|
-            node.set['vsts_build_agent']['agents'][resource.agent_name][var] = resource.send(var) if resource.respond_to?(var.to_sym)
-          end
+          node.set['vsts_build_agent']['agents'][resource.agent_name]['install_dir'] = resource.install_dir
           node.save
         end
 
         def load_current_state(resource, node)
+          resource.exists = false
           return unless agent_attribute?(resource.agent_name, node)
-          VARS_TO_SAVE.each do |var|
-            resource.send(var, node['vsts_build_agent']['agents'][resource.agent_name][var]) if resource.respond_to?(var.to_sym)
-          end
+          resource.install_dir(node['vsts_build_agent']['agents'][resource.agent_name]['install_dir']) unless resource.install_dir
+          return unless ::File.exist?(::File.join(resource.install_dir, '.agent'))
+          f = ::File.read(::File.join(resource.install_dir, '.agent'), mode: 'r:bom|utf-8').strip
+          agent = JSON.parse(f)
+          resource.vsts_url(agent['serverUrl'])
+          resource.vsts_pool(agent['poolName'])
+          resource.work_folder(agent['workFolder'])
+          resource.exists = true
         end
 
         def agent_attribute?(agent_name, node)
-          node['vsts_build_agent']['agents'] && node['vsts_build_agent']['agents'][agent_name]
+          if node['vsts_build_agent']['agents'] != nil && 
+              node['vsts_build_agent']['agents'][agent_name] != nil &&
+              node['vsts_build_agent']['agents'][agent_name]['install_dir'] != nil &&
+              !node['vsts_build_agent']['agents'][agent_name]['install_dir'].empty?
+            return true
+          else
+            return false
+          end
         end
 
         def remove_current_state(resource, node)
@@ -52,36 +84,41 @@ module VSTS
           node.save
         end
 
-        def plist_path(resource)
-          path = if resource.sv_session
-                   "/Library/LaunchAgents/#{resource.sv_name}.plist"
-                 else
-                   "/Library/LaunchDaemons/#{resource.sv_name}.plist"
-                 end
+        # def plist_path(resource)
+        #   path = if resource.sv_session
+        #            "/Library/LaunchAgents/#{resource.sv_name}.plist"
+        #          else
+        #            "/Library/LaunchDaemons/#{resource.sv_name}.plist"
+        #          end
 
-          path = "#{resource.user_home}#{path}" if resource.user_home
-          path
-        end
+        #   path = "#{resource.user_home}#{path}" if resource.user_home
+        #   path
+        # end
 
-        def launchctl_load(resource)
-          plist = plist_path resource
-          command = 'launchctl load -w '
-          command += "-S #{resource.sv_session} " if resource.sv_session
-          command += plist
-          command
-        end
+        # def launchctl_load(resource)
+        #   plist = plist_path resource
+        #   command = 'launchctl load -w '
+        #   command += "-S #{resource.sv_session} " if resource.sv_session
+        #   command += plist
+        #   command
+        # end
 
-        def launchctl_unload(resource)
-          plist = plist_path resource
-          command = "launchctl unload #{plist}"
-          command
-        end
+        # def launchctl_unload(resource)
+        #   plist = plist_path resource
+        #   command = "launchctl unload #{plist}"
+        #   command
+        # end
 
         def vsagentexec(args = {})
-          command = 'Agent\\VsoAgent.exe '
+          command = 'Agent.Listener '
+          command = './' + command unless windows?
           args.each do |key, value|
-            command += "/#{key}"
-            command += ":\"#{value}\"" unless value.nil?
+            if key == 'configure' || key == 'remove'
+              command += key
+            else
+              command += "--#{key}"
+              command += " \"#{value}\"" unless value.nil?
+            end
             command += ' '
           end
           command

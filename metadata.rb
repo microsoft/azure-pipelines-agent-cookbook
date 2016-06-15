@@ -12,8 +12,6 @@ version          '1.0.0'
   supports os
 end
 
-suggests 'nodejs'
-
-depends 'runit'
 depends 'windows'
 depends 'ark'
+depends 'seven_zip', '~> 2.0.0'
