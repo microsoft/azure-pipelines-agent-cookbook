@@ -9,8 +9,7 @@ attribute :group, :kind_of => String
 
 attribute :work_folder, :kind_of => String, :default => '_work'
 
-# Windows Service
-attribute :runasservice, :kind_of => [ TrueClass, FalseClass ], :default => true
+attribute :runasservice, :kind_of => [TrueClass, FalseClass], :default => true
 attribute :windowslogonaccount, :kind_of => String
 attribute :windowslogonpassword, :kind_of => String
 

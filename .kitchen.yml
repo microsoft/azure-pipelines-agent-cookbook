@@ -18,9 +18,9 @@ platforms:
     provisioner:
       require_chef_omnibus: 12.4.3
 
-  - name: ubuntu1404
+  - name: ubuntu1604
     driver_config:
-      box: ubuntu/trusty64
+      box: ubuntu/xenial64
     provisioner:
       require_chef_omnibus: 12.4.3
 
@@ -55,12 +55,33 @@ platforms:
 
 
 suites:
-  - name: xplat-basic
+  - name: windows-basic
     run_list:
-      - recipe[xplat-basic::default]
+      - recipe[windows-basic::default]
+    includes:
+      - windows10
+    attributes:
+        vsts_build_agent_test:
+            vsts_url: <%= ENV['VSTS_URL'] %>
+            vsts_pool: <%= ENV['VSTS_POOL'] %>
+            vsts_token: <%= ENV['VSTS_TOKEN'] %>
+            
+  - name: debian-basic
+    run_list:
+      - recipe[debian-basic::default]
     includes:
       - debian8
-      - windows10
+      - ubuntu1604
+    attributes:
+        vsts_build_agent_test:
+            vsts_url: <%= ENV['VSTS_URL'] %>
+            vsts_pool: <%= ENV['VSTS_POOL'] %>
+            vsts_token: <%= ENV['VSTS_TOKEN'] %>
+
+  - name: osx-basic
+    run_list:
+      - recipe[osx-basic::default]
+    includes:
       - osx109-desktop
 
     attributes:
@@ -68,4 +89,3 @@ suites:
             vsts_url: <%= ENV['VSTS_URL'] %>
             vsts_pool: <%= ENV['VSTS_POOL'] %>
             vsts_token: <%= ENV['VSTS_TOKEN'] %>
-
