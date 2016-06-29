@@ -23,8 +23,8 @@ The following platforms are tested and supported:
 Attributes
 ----------
 * `node['vsts_agent']['binary']['version']` - set version of package to install
-* `node['vsts_agent']['prerequisites']['osx']['install']` - controll osx dependencies installation. Default true
-* `node['vsts_agent']['prerequisites']['debian']['install']` - controll debian dependencies installation. Default true
+* `node['vsts_agent']['prerequisites']['osx']['install']` - control osx dependencies installation. Default true
+* `node['vsts_agent']['prerequisites']['debian']['install']` - control debian dependencies installation. Default true
 
 Resource/Provider
 -----------------
