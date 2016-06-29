@@ -44,9 +44,7 @@ kitchen verify PLATFORM
 ```
 
 Available platforms:
-* debian7 (public)
-* ubuntu1404 (public)
-* centos6 (public)
+* debian8 (public)
+* ubuntu1604 (public)
 * osx109-desktop (private)
 * windows10 (private)
-* windows81 (private)

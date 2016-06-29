@@ -1,144 +1,87 @@
-Visual Studio Team Services Build Agent Cookbook
+Visual Studio Team Services Build and Release Agent Cookbook
 ================
 
 [![Join the chat at https://gitter.im/Microsoft/vsts-agent-cookbook](https://badges.gitter.im/Microsoft/vsts-agent-cookbook.svg)](https://gitter.im/Microsoft/vsts-agent-cookbook?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/Microsoft/vsts-agent-cookbook.svg?branch=master)](https://travis-ci.org/Microsoft/vsts-agent-cookbook)
 [![Cookbook Version](https://img.shields.io/cookbook/v/vsts_agent.svg)](https://supermarket.chef.io/cookbooks/vsts_agent)
 
-Installs and configures Visual Studio Team Services [Build Agent](https://www.visualstudio.com/en-us/get-started/build/build-your-app-vs) (a.k.a VSO Build Agent)
+Installs and configures Visual Studio Team Services [Build and Release Agent](https://github.com/Microsoft/vsts-agent/)
 
 Please check [Wiki](https://github.com/Microsoft/vsts-agent-cookbook/wiki) for more examples
 
 Requirements
 ------------
-- Chef 11 or higher
+- Chef 12 or higher
 
 ### Platforms
 The following platforms are tested and supported:
-- Debian 7 (Wheezy)
-- Ubuntu 14.04
-- CentOS 6
-- Windows 8.1
+- Debian 8 x64 (Jessie)
+- Ubuntu 16.04
 - Windows 10
-- Mac OS X 10.9.5
-
-The following platforms are known to work:
-- Microsoft Windows (8, 8.1, 10)
-
-### Dependent Cookbooks
-This cookbook doesn't install nodejs executables for an XPlat(CrossPlatform) build agent.
-Please use [nodejs](https://supermarket.chef.io/cookbooks/nodejs) cookbook or any other ways which suits your case.
+- Mac OS X 10.11.4 
 
 Attributes
 ----------
-
-* `node['vsts_agent']['xplat']['package_name']` - Set an xplat build agent [npm](https://www.npmjs.com/package/vsoagent-installer) package name
-* `node['vsts_agent']['xplat']['package_version']` - Set an npm package version. Possible values 'x.y.z' or 'latest'
-* `node['vsts_agent']['xplat']['skip_vsoagent_installer']` - Set to 'true' if you need another way to install npm package.
+* `node['vsts_agent']['binary']['version']` - set version of package to install
+* `node['vsts_agent']['prerequisites']['osx']['install']` - controll osx dependencies installation. Default true
+* `node['vsts_agent']['prerequisites']['debian']['install']` - controll debian dependencies installation. Default true
 
 Resource/Provider
 -----------------
-### windows
-This resource installs and configures a build agent on windows host
+### vsts_agent
+This resource installs and configures the vsts build and release agent
 #### Actions
-- `:install`: Install and configure a build agent
-- `:remove`: Remove a build agent and unregister it from VSTS
-- `:restart`: Restart a build agent service
+- `:install`: Install and configure the agent
+- `:remove`: Remove the agent and unregister it from VSTS
+- `:restart`: Restart the agent service
 
 #### Parameters
-- `agent_name`: Name attribute. The name of a build agent
-- `install_dir`: A target directory to install a build agent
-- `sv_name`: Set a windows service name. Default vsoagent.host.agent_name
-- `sv_user`: Set a user name to run windows service. Possible values are "NT AUTHORITY\\NetworkService", "NT AUTHORITY\\LocalService" or any system valid username
-- `sv_password`: Set password with sv_user unless it is equal to NetworkService or LocalService
-- `vsts_url`: A target VSTS url
-- `vsts_user`: A user to connect with VSTS
-- `vsts_token`: A personal access token from VSTS. [See](http://roadtoalm.com/2015/07/22/using-personal-access-tokens-to-access-visual-studio-online/)
-- `vsts_pool`: A pool name on VSTS
+- `agent_name`: Name attribute. The name of the vsts agent
+- `version`: an agent version to install. Default version from an attribute
+- `install_dir`: A target directory to install the vsts agent
+- `user`: Set a local user to run the vsts agent
+- `group`: Set a local group to run the vsts agent
+- `runasservice`: run agent as a service. Default 'true'
+- `windowslogonaccount`: Set a user name to run a windows service. Possible values are "NT AUTHORITY\NetworkService", "NT AUTHORITY\LocalService" or any system valid username
+- `windowslogonpassword`: Set password for windowslogonaccount unless it is equal to NetworkService or LocalService
+- `vsts_url`: url to VSTS instance
+- `vsts_pool`: A pool to connect an agent
+- `vsts_auth`:  Authentication type. Valid options are PAT (Personal Access Token), Negotiate (Kerberos or NTLM), Integrated (Windows default credentials) and ALT (Alternate Credentials). Default PAT auth
+- `vsts_token`: A personal access token for VSTS. Used with PAT auth type. [See](http://roadtoalm.com/2015/07/22/using-personal-access-tokens-to-access-visual-studio-online/)
+- `vsts_username`: A user to connect to VSTS. Used with Negotiate and ALT auth
+- `vsts_password`: A user to connect to VSTS. Used with Negotiate and ALT auth
 - `work_folder`: Set different workspace location. Default is "install_dir/\_work"
 
 #### Examples
-Install, configure, restart and remove a build agent.
-Check [tests](test/cookbooks/windows-basic/recipes/default.rb) for more examples.
+Install, configure, restart and remove an agent.
+Check [windows](test/cookbooks/windows-basic/recipes/default.rb), [debian](test/cookbooks/debian-basic/recipes/default.rb) or [osx](test/cookbooks/osx-basic/recipes/default.rb) tests for more examples.
 
 ```ruby
 include_recipe 'vsts_agent::default'
 
-vsts_agent_windows 'agent' do
-  install_dir 'c:\\agents\\agent1'
-  sv_user 'vagrant'
-  sv_password 'vagrant'
-  vsts_url 'https://<account>.visualstudio.com'
-  vsts_pool 'default'
-  vsts_user 'builder'
-  vsts_token 'my_secret_token_from_vsts'
-  action :install
+if platform_family?('windows')
+  dir = 'c:\\agents'
+else
+  dir = '/tmp/agents'
 end
 
-vsts_agent_windows 'agent' do
-  action :restart
-end
-
-vsts_agent_windows 'agent' do
-  vsts_token 'my_secret_token_from_vsts'
-  action :remove
-end
-```
-
-### xplat
-This resource installs and configures a build agent on linux or macosx host
-#### Actions
-- `:install`: Install and configure a build agent
-- `:remove`: Remove a build agent and unregister it from VSTS
-- `:restart`: Restart a build agent service
-
-#### Parameters
-- `agent_name`: Name attribute. The name of build agent
-- `install_dir`: A target directory to install build agent
-- `user`: Set a user to run build agent.
-- `group`: Set a group to run build agent.
-- `sv_name`: Set a service name. Default vsoagent.host.agent_name
-- `sv_envs`: Set hash of environment variables to pass into an agent process
-- `sv_session`: For MacOsX only. Set a LaunchAgent session.
-- `vsts_url`: A target VSTS url
-- `vsts_user`: A user to connect with VSTS
-- `vsts_token`: A personal access token from VSTS. [See](http://roadtoalm.com/2015/07/22/using-personal-access-tokens-to-access-visual-studio-online/)
-- `vsts_pool`: A pool name on VSTS
-
-#### Examples
-Install, configure, restart and remove build agent.
-Check [tests](test/cookbooks/xplat-basic/recipes/default.rb) for more examples.
-
-```ruby
-include_recipe 'vsts_agent::default'
-
-if platform_family?('mac_os_x')
-  include_recipe 'homebrew'
-end
-
-include_recipe 'nodejs::default'
-include_recipe 'nodejs::npm'
-
-vsts_agent_xplat 'xplat_agent' do
-  install_dir "/home/vagrant/agents/xplat_agent"
+vsts_agent 'agent_01' do
+  install_dir dir
   user 'vagrant'
   group 'vagrant'
-  sv_envs(
-    'PATH' => '/usr/local/bin/:/opt/local/bin:/sbin:/usr/sbin:/bin:/usr/bin',
-    'TEST' => 'agent1'
-    )
-  vsts_url 'https://account.visualstudio.com'
+  vsts_url 'https://contoso.visualstudio.com'
   vsts_pool 'default'
-  vsts_user 'builder'
   vsts_token 'my_secret_token_from_vsts'
+  windowslogonaccount 'builder' # will be used only on windows
+  windowslogonpassword 'Pas$w0r_d' # will be used only on windows
   action :install
 end
 
-vsts_agent_xplat 'xplat_agent' do
+vsts_agent 'agent_01' do
   action :restart
 end
 
-vsts_agent_xplat 'xplat_agent' do
+vsts_agent 'agent_01' do
   vsts_token 'my_secret_token_from_vsts'
   action :remove
 end
