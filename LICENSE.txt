@@ -1,4 +1,4 @@
-vsts-build-agent-cookbook
+vsts-agent-cookbook
 
 Copyright (c) Microsoft Corporation
 All rights reserved.

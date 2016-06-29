@@ -61,7 +61,7 @@ suites:
     includes:
       - windows10
     attributes:
-        vsts_build_agent_test:
+        vsts_agent_test:
             vsts_url: <%= ENV['VSTS_URL'] %>
             vsts_pool: <%= ENV['VSTS_POOL'] %>
             vsts_token: <%= ENV['VSTS_TOKEN'] %>
@@ -73,7 +73,7 @@ suites:
       - debian8
       - ubuntu1604
     attributes:
-        vsts_build_agent_test:
+        vsts_agent_test:
             vsts_url: <%= ENV['VSTS_URL'] %>
             vsts_pool: <%= ENV['VSTS_POOL'] %>
             vsts_token: <%= ENV['VSTS_TOKEN'] %>
@@ -85,7 +85,7 @@ suites:
       - osx109-desktop
 
     attributes:
-        vsts_build_agent_test:
+        vsts_agent_test:
             vsts_url: <%= ENV['VSTS_URL'] %>
             vsts_pool: <%= ENV['VSTS_POOL'] %>
             vsts_token: <%= ENV['VSTS_TOKEN'] %>

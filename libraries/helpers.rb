@@ -30,13 +30,13 @@ module VSTS
         end
 
         def archive_name(resource)
-          name = 'vsts_build_agent'
+          name = 'vsts_agent'
           name += '_' + resource.version if resource.version
           name
         end
 
         def download_url(version, node)
-          url = node['vsts_build_agent']['binary']['url']
+          url = node['vsts_agent']['binary']['url']
           url = url.gsub '%s', version
           url
         end
@@ -58,12 +58,12 @@ module VSTS
         end
 
         def save_vars(resource, node)
-          VARS_TO_SAVE.each { |var| node.set['vsts_build_agent']['agents'][resource.agent_name][var] = resource.send(var) if resource.respond_to?(var.to_sym) }
+          VARS_TO_SAVE.each { |var| node.set['vsts_agent']['agents'][resource.agent_name][var] = resource.send(var) if resource.respond_to?(var.to_sym) }
           node.save
         end
 
         def load_vars(resource, node)
-          VARS_TO_SAVE.each { |var| resource.send(var, node['vsts_build_agent']['agents'][resource.agent_name][var]) if resource.respond_to?(var.to_sym) }
+          VARS_TO_SAVE.each { |var| resource.send(var, node['vsts_agent']['agents'][resource.agent_name][var]) if resource.respond_to?(var.to_sym) }
         end
 
         def load_current_state(resource, node)
@@ -87,10 +87,10 @@ module VSTS
         end
 
         def agent_attribute?(agent_name, node)
-          if node['vsts_build_agent']['agents'].nil? ||
-             node['vsts_build_agent']['agents'][agent_name].nil? ||
-             node['vsts_build_agent']['agents'][agent_name]['install_dir'].nil? ||
-             node['vsts_build_agent']['agents'][agent_name]['install_dir'].empty?
+          if node['vsts_agent']['agents'].nil? ||
+             node['vsts_agent']['agents'][agent_name].nil? ||
+             node['vsts_agent']['agents'][agent_name]['install_dir'].nil? ||
+             node['vsts_agent']['agents'][agent_name]['install_dir'].empty?
             return false
           else
             return true
@@ -98,7 +98,7 @@ module VSTS
         end
 
         def remove_current_state(resource, node)
-          node.set['vsts_build_agent']['agents'][resource.agent_name] = {}
+          node.set['vsts_agent']['agents'][resource.agent_name] = {}
           node.save
         end
 

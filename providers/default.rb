@@ -11,14 +11,14 @@ def whyrun_supported?
 end
 
 def load_current_resource
-  @current_resource = Chef::Resource::VstsBuildAgent.new(@new_resource.name)
+  @current_resource = Chef::Resource::VstsAgent.new(@new_resource.name)
   @current_resource.agent_name(@new_resource.agent_name)
   load_current_state(@current_resource, node)
   @current_resource
 end
 
 action :install do
-  condidate_version = new_resource.version || node['vsts_build_agent']['binary']['version']
+  condidate_version = new_resource.version || node['vsts_agent']['binary']['version']
   need_upgrade = current_resource.version != condidate_version
   if @current_resource.exists && !need_upgrade
     Chef::Log.info "'#{new_resource.agent_name}' agent '#{current_resource.version}' already exists - nothing to do"

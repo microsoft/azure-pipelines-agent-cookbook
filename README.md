@@ -1,13 +1,13 @@
 Visual Studio Team Services Build Agent Cookbook
 ================
 
-[![Join the chat at https://gitter.im/Microsoft/vsts-build-agent-cookbook](https://badges.gitter.im/Microsoft/vsts-build-agent-cookbook.svg)](https://gitter.im/Microsoft/vsts-build-agent-cookbook?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](https://travis-ci.org/Microsoft/vsts-build-agent-cookbook.svg?branch=master)](https://travis-ci.org/Microsoft/vsts-build-agent-cookbook)
-[![Cookbook Version](https://img.shields.io/cookbook/v/vsts_build_agent.svg)](https://supermarket.chef.io/cookbooks/vsts_build_agent)
+[![Join the chat at https://gitter.im/Microsoft/vsts-agent-cookbook](https://badges.gitter.im/Microsoft/vsts-agent-cookbook.svg)](https://gitter.im/Microsoft/vsts-agent-cookbook?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/Microsoft/vsts-agent-cookbook.svg?branch=master)](https://travis-ci.org/Microsoft/vsts-agent-cookbook)
+[![Cookbook Version](https://img.shields.io/cookbook/v/vsts_agent.svg)](https://supermarket.chef.io/cookbooks/vsts_agent)
 
 Installs and configures Visual Studio Team Services [Build Agent](https://www.visualstudio.com/en-us/get-started/build/build-your-app-vs) (a.k.a VSO Build Agent)
 
-Please check [Wiki](https://github.com/Microsoft/vsts-build-agent-cookbook/wiki) for more examples
+Please check [Wiki](https://github.com/Microsoft/vsts-agent-cookbook/wiki) for more examples
 
 Requirements
 ------------
@@ -32,9 +32,9 @@ Please use [nodejs](https://supermarket.chef.io/cookbooks/nodejs) cookbook or an
 Attributes
 ----------
 
-* `node['vsts_build_agent']['xplat']['package_name']` - Set an xplat build agent [npm](https://www.npmjs.com/package/vsoagent-installer) package name
-* `node['vsts_build_agent']['xplat']['package_version']` - Set an npm package version. Possible values 'x.y.z' or 'latest'
-* `node['vsts_build_agent']['xplat']['skip_vsoagent_installer']` - Set to 'true' if you need another way to install npm package.
+* `node['vsts_agent']['xplat']['package_name']` - Set an xplat build agent [npm](https://www.npmjs.com/package/vsoagent-installer) package name
+* `node['vsts_agent']['xplat']['package_version']` - Set an npm package version. Possible values 'x.y.z' or 'latest'
+* `node['vsts_agent']['xplat']['skip_vsoagent_installer']` - Set to 'true' if you need another way to install npm package.
 
 Resource/Provider
 -----------------
@@ -62,9 +62,9 @@ Install, configure, restart and remove a build agent.
 Check [tests](test/cookbooks/windows-basic/recipes/default.rb) for more examples.
 
 ```ruby
-include_recipe 'vsts_build_agent::default'
+include_recipe 'vsts_agent::default'
 
-vsts_build_agent_windows 'agent' do
+vsts_agent_windows 'agent' do
   install_dir 'c:\\agents\\agent1'
   sv_user 'vagrant'
   sv_password 'vagrant'
@@ -75,11 +75,11 @@ vsts_build_agent_windows 'agent' do
   action :install
 end
 
-vsts_build_agent_windows 'agent' do
+vsts_agent_windows 'agent' do
   action :restart
 end
 
-vsts_build_agent_windows 'agent' do
+vsts_agent_windows 'agent' do
   vsts_token 'my_secret_token_from_vsts'
   action :remove
 end
@@ -110,7 +110,7 @@ Install, configure, restart and remove build agent.
 Check [tests](test/cookbooks/xplat-basic/recipes/default.rb) for more examples.
 
 ```ruby
-include_recipe 'vsts_build_agent::default'
+include_recipe 'vsts_agent::default'
 
 if platform_family?('mac_os_x')
   include_recipe 'homebrew'
@@ -119,7 +119,7 @@ end
 include_recipe 'nodejs::default'
 include_recipe 'nodejs::npm'
 
-vsts_build_agent_xplat 'xplat_agent' do
+vsts_agent_xplat 'xplat_agent' do
   install_dir "/home/vagrant/agents/xplat_agent"
   user 'vagrant'
   group 'vagrant'
@@ -134,11 +134,11 @@ vsts_build_agent_xplat 'xplat_agent' do
   action :install
 end
 
-vsts_build_agent_xplat 'xplat_agent' do
+vsts_agent_xplat 'xplat_agent' do
   action :restart
 end
 
-vsts_build_agent_xplat 'xplat_agent' do
+vsts_agent_xplat 'xplat_agent' do
   vsts_token 'my_secret_token_from_vsts'
   action :remove
 end

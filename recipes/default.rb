@@ -1,11 +1,11 @@
 include_recipe 'ark::default'
 
-if platform_family?('debian') && node['vsts_build_agent']['prerequisites']['debian']['install']
+if platform_family?('debian') && node['vsts_agent']['prerequisites']['debian']['install']
   package 'libunwind8'
   package 'libcurl3'
   if platform?('ubuntu') && node['platform_version'].to_i >= 16
     remote_file "#{Chef::Config[:file_cache_path]}/libicu52_52.1-8ubuntu0.2_amd64.deb" do
-      source node['vsts_build_agent']['prerequisites']['debian']['libicu52']['url']
+      source node['vsts_agent']['prerequisites']['debian']['libicu52']['url']
       mode 0644
     end
     dpkg_package 'libicu52' do
@@ -16,11 +16,11 @@ if platform_family?('debian') && node['vsts_build_agent']['prerequisites']['debi
   else
     package 'libicu52'
   end
-elsif (platform_family?('mac_os_x') || platform_family?('mac_os_x_server')) && node['vsts_build_agent']['prerequisites']['osx']['install']
+elsif (platform_family?('mac_os_x') || platform_family?('mac_os_x_server')) && node['vsts_agent']['prerequisites']['osx']['install']
   cpu = node['cpu'] ? node['cpu']['total'].to_i : 2
-  version = node['vsts_build_agent']['prerequisites']['osx']['openssl']['version']
+  version = node['vsts_agent']['prerequisites']['osx']['openssl']['version']
   ark 'openssl' do
-    url node['vsts_build_agent']['prerequisites']['osx']['openssl']['url']
+    url node['vsts_agent']['prerequisites']['osx']['openssl']['url']
     backup false
     path Chef::Config[:file_cache_path]
     action :put
