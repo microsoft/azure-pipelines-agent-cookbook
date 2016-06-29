@@ -1,23 +1,30 @@
 #### Begin prepare system ####
+include_recipe 'apt::default'
+include_recipe 'build-essential::default'
+
+user 'vagrant' do
+  supports :manage_home => true
+  comment 'Vagrant user'
+  home '/home/vagrant'
+  shell '/bin/bash'
+  not_if 'id -u vagrant'
+end
+
 user 'builder' do
+  supports :manage_home => true
   comment 'Builder user'
   home '/home/builder'
   shell '/bin/bash'
-  password 'Pas$w0r_d'
 end
-
-grant_logon_as_service 'vagrant'
-grant_logon_as_service 'builder'
 
 #### End prepare system ####
 
 include_recipe 'vsts_agent::default'
 
-agent1_name = "win_#{node['hostname']}_01"
-agent2_name = "win_#{node['hostname']}_02"
-agent3_name = "win_#{node['hostname']}_03"
+agent1_name = "#{node['hostname']}_01"
+agent2_name = "#{node['hostname']}_02"
 
-agents_dir = 'C:\\Users\\vagrant\\agents'
+agents_dir = '/home/vagrant/agents'
 
 # cleanup
 vsts_agent agent1_name do
@@ -30,21 +37,14 @@ vsts_agent agent2_name do
   action :remove
 end
 
-vsts_agent agent3_name do
-  vsts_token node['vsts_agent_test']['vsts_token']
-  action :remove
-end
-
 # Agent1
 vsts_agent agent1_name do
-  version '2.102.0'
   install_dir "#{agents_dir}/#{agent1_name}"
   user 'vagrant'
+  group 'vagrant'
   vsts_url node['vsts_agent_test']['vsts_url']
   vsts_pool node['vsts_agent_test']['vsts_pool']
   vsts_token node['vsts_agent_test']['vsts_token']
-  windowslogonaccount 'vagrant'
-  windowslogonpassword 'vagrant'
   action :install
 end
 
@@ -59,29 +59,16 @@ end
 
 # Agent2
 vsts_agent agent2_name do
-  version '2.102.0'
+  version '2.102.1'
   install_dir "#{agents_dir}/#{agent2_name}"
   user 'builder'
+  group 'builder'
   vsts_url node['vsts_agent_test']['vsts_url']
   vsts_pool node['vsts_agent_test']['vsts_pool']
   vsts_token node['vsts_agent_test']['vsts_token']
-  windowslogonaccount 'NT AUTHORITY\\NetworkService'
   action :install
 end
 
 vsts_agent agent2_name do
   action :restart
-end
-
-# Agent3
-vsts_agent agent3_name do
-  version '2.102.1'
-  install_dir "#{agents_dir}/#{agent3_name}"
-  user 'builder'
-  vsts_url node['vsts_agent_test']['vsts_url']
-  vsts_pool node['vsts_agent_test']['vsts_pool']
-  vsts_token node['vsts_agent_test']['vsts_token']
-  windowslogonaccount 'builder'
-  windowslogonpassword 'Pas$w0r_d'
-  action :install
 end

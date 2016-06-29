@@ -16,11 +16,11 @@ platforms:
     driver_config:
       box: debian/jessie64
     provisioner:
-      require_chef_omnibus: 11.18.6
+      require_chef_omnibus: 12.4.3
 
-  - name: ubuntu1404
+  - name: ubuntu1604
     driver_config:
-      box: ubuntu/trusty64
+      box: ubuntu/xenial64
     provisioner:
       require_chef_omnibus: 12.4.3
 
@@ -51,37 +51,41 @@ platforms:
       communicator: 'winrm'
       box: win81x64-enterprise #private
     provisioner:
-      require_chef_omnibus: 11.18.6
+      require_chef_omnibus: 12.4.3
 
 
 suites:
-  - name: xplat-basic
-    run_list:
-      - recipe[xplat-basic::default]
-    includes:
-      - debian8
-      - ubuntu1404
-      - centos6
-      - osx109-desktop
-
-    attributes:
-        vsts_build_agent_test:
-            vsts_url: <%= ENV['VSTS_URL'] %>
-            vsts_pool: <%= ENV['VSTS_POOL'] %>
-            vsts_user: <%= ENV['VSTS_USER'] %>
-            vsts_token: <%= ENV['VSTS_TOKEN'] %>
-
-
   - name: windows-basic
     run_list:
       - recipe[windows-basic::default]
     includes:
       - windows10
-      - windows81
-
     attributes:
-        vsts_build_agent_test:
+        vsts_agent_test:
             vsts_url: <%= ENV['VSTS_URL'] %>
             vsts_pool: <%= ENV['VSTS_POOL'] %>
-            vsts_user: <%= ENV['VSTS_USER'] %>
+            vsts_token: <%= ENV['VSTS_TOKEN'] %>
+            
+  - name: debian-basic
+    run_list:
+      - recipe[debian-basic::default]
+    includes:
+      - debian8
+      - ubuntu1604
+    attributes:
+        vsts_agent_test:
+            vsts_url: <%= ENV['VSTS_URL'] %>
+            vsts_pool: <%= ENV['VSTS_POOL'] %>
+            vsts_token: <%= ENV['VSTS_TOKEN'] %>
+
+  - name: osx-basic
+    run_list:
+      - recipe[osx-basic::default]
+    includes:
+      - osx109-desktop
+
+    attributes:
+        vsts_agent_test:
+            vsts_url: <%= ENV['VSTS_URL'] %>
+            vsts_pool: <%= ENV['VSTS_POOL'] %>
             vsts_token: <%= ENV['VSTS_TOKEN'] %>
