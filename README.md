@@ -39,6 +39,8 @@ This resource installs and configures the vsts build and release agent
 - `agent_name`: Name attribute. The name of the vsts agent
 - `version`: an agent version to install. Default version from an attribute
 - `install_dir`: A target directory to install the vsts agent
+- `path`: Overwrite system PATH environment variable values. Linux and Mac OS X only
+- `env`: Additional environment variables. Linux and Mac OS X only 
 - `user`: Set a local user to run the vsts agent
 - `group`: Set a local group to run the vsts agent
 - `runasservice`: run agent as a service. Default 'true'
@@ -69,6 +71,8 @@ vsts_agent 'agent_01' do
   install_dir dir
   user 'vagrant'
   group 'vagrant'
+  path '/usr/local/bin/:/usr/bin:/opt/bin/' # only works on nix systems
+  env('M2_HOME' => '/opt/maven', 'JAVA_HOME' => '/opt/java') # only works on nix systems
   vsts_url 'https://contoso.visualstudio.com'
   vsts_pool 'default'
   vsts_token 'my_secret_token_from_vsts'

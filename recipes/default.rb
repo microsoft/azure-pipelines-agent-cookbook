@@ -3,19 +3,10 @@ include_recipe 'ark::default'
 if platform_family?('debian') && node['vsts_agent']['prerequisites']['debian']['install']
   package 'libunwind8'
   package 'libcurl3'
-  if platform?('ubuntu') && node['platform_version'].to_i >= 16
-    remote_file "#{Chef::Config[:file_cache_path]}/libicu52_52.1-8ubuntu0.2_amd64.deb" do
-      source node['vsts_agent']['prerequisites']['debian']['libicu52']['url']
-      mode 0644
-    end
-    dpkg_package 'libicu52' do
-      source "#{Chef::Config[:file_cache_path]}/libicu52_52.1-8ubuntu0.2_amd64.deb"
-      version '52.1-8ubuntu0.2'
-      action :install
-    end
-  else
+  unless platform?('ubuntu') && node['platform_version'].to_i >= 16
     package 'libicu52'
   end
+
 elsif (platform_family?('mac_os_x') || platform_family?('mac_os_x_server')) && node['vsts_agent']['prerequisites']['osx']['install']
   cpu = node['cpu'] ? node['cpu']['total'].to_i : 2
   version = node['vsts_agent']['prerequisites']['osx']['openssl']['version']

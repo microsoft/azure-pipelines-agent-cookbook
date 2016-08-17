@@ -15,6 +15,8 @@ attribute :windowslogonpassword, :kind_of => String
 
 # environment
 attribute :version, :kind_of => String
+attribute :path, :kind_of => String
+attribute :env, :kind_of => Hash, :default => {}
 
 # VSTS Access
 attribute :vsts_url, :kind_of => String

@@ -1,4 +1,4 @@
-default['vsts_agent']['binary']['version'] = '2.102.1'
+default['vsts_agent']['binary']['version'] = '2.105.0'
 
 case node['platform_family']
 when 'windows'
@@ -6,7 +6,12 @@ when 'windows'
 when 'rhel'
   default['vsts_agent']['binary']['url'] = 'https://github.com/Microsoft/vsts-agent/releases/download/v%s/vsts-agent-rhel.7.2-x64-%s.tar.gz'
 when 'debian'
-  default['vsts_agent']['binary']['url'] = 'https://github.com/Microsoft/vsts-agent/releases/download/v%s/vsts-agent-ubuntu.14.04-x64-%s.tar.gz'
+  default['vsts_agent']['binary']['url'] =
+    if platform?('ubuntu') && node['platform_version'].to_i >= 16
+      'https://github.com/Microsoft/vsts-agent/releases/download/v%s/vsts-agent-ubuntu.16.04-x64-%s.tar.gz'
+    else
+      'https://github.com/Microsoft/vsts-agent/releases/download/v%s/vsts-agent-ubuntu.14.04-x64-%s.tar.gz'
+    end
 when 'mac_os_x', 'mac_os_x_server'
   default['vsts_agent']['binary']['url'] = 'https://github.com/Microsoft/vsts-agent/releases/download/v%s/vsts-agent-osx.10.11-x64-%s.tar.gz'
 end

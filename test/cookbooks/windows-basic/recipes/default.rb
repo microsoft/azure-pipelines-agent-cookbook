@@ -37,7 +37,6 @@ end
 
 # Agent1
 vsts_agent agent1_name do
-  version '2.102.0'
   install_dir "#{agents_dir}/#{agent1_name}"
   user 'vagrant'
   vsts_url node['vsts_agent_test']['vsts_url']
@@ -59,7 +58,6 @@ end
 
 # Agent2
 vsts_agent agent2_name do
-  version '2.102.0'
   install_dir "#{agents_dir}/#{agent2_name}"
   user 'builder'
   vsts_url node['vsts_agent_test']['vsts_url']
@@ -75,7 +73,6 @@ end
 
 # Agent3
 vsts_agent agent3_name do
-  version '2.102.1'
   install_dir "#{agents_dir}/#{agent3_name}"
   user 'builder'
   vsts_url node['vsts_agent_test']['vsts_url']

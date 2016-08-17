@@ -1,7 +1,7 @@
 require 'chef/mixin/shell_out'
 require 'json'
 
-include ::VSTS::Build::Agent::Helpers
+include ::VSTS::Agent::Helpers
 include ::Windows::Helper
 
 use_inline_resources
@@ -13,35 +13,33 @@ end
 def load_current_resource
   @current_resource = Chef::Resource::VstsAgent.new(@new_resource.name)
   @current_resource.agent_name(@new_resource.agent_name)
+  @current_resource.vsts_token(@new_resource.vsts_token)
   load_current_state(@current_resource, node)
   @current_resource
 end
 
 action :install do
-  condidate_version = new_resource.version || node['vsts_agent']['binary']['version']
-  need_upgrade = current_resource.version != condidate_version
-  if @current_resource.exists && !need_upgrade
+  version = new_resource.version || node['vsts_agent']['binary']['version']
+
+  vsts_agent_service new_resource.agent_name do
+    install_dir new_resource.install_dir
+    user new_resource.user
+    group new_resource.group
+    action :nothing
+  end
+
+  service_id = "vsts_agent_service[#{new_resource.agent_name}]"
+
+  if @current_resource.exists
     Chef::Log.info "'#{new_resource.agent_name}' agent '#{current_resource.version}' already exists - nothing to do"
   else
-    converge_by("Installing agent '#{new_resource.agent_name}' version '#{condidate_version}'") do
-      version = condidate_version
+    converge_by("Installing agent '#{new_resource.agent_name}' version '#{version}'") do
       archive_url = download_url(version, node)
       archive_name = archive_name(new_resource)
       unpack_dir = ::File.join(Chef::Config[:file_cache_path], 'unpack_agent')
       unpack_dir = win_friendly_path(unpack_dir) if windows?
 
-      if current_resource.exists && need_upgrade
-        Chef::Log.info "'#{new_resource.agent_name}' agent will be upgradet to version '#{current_resource.version}'"
-        remove_agent(current_resource, new_resource)
-      end
-
-      config = service_config(new_resource)
-      execute "Remove service config file #{config}" do
-        command "rm -rf #{config}"
-        action :run
-        not_if { windows? }
-      end
-      
+      remove_agent(new_resource)
 
       directory unpack_dir do
         recursive true
@@ -117,8 +115,9 @@ action :install do
         only_if { osx? }
       end
 
-      manage_service("install #{new_resource.user}", new_resource) if new_resource.runasservice
-      manage_service('restart', new_resource) if new_resource.runasservice
+      log "Trigger service installation for agent #{new_resource.agent_name}" do
+        notifies :enable, service_id, :immediately
+      end
 
       ruby_block "save state for agent '#{new_resource.agent_name}'" do
         block do
@@ -130,12 +129,35 @@ action :install do
       new_resource.updated_by_last_action(true)
     end
   end
+
+  template "#{new_resource.install_dir}/.path" do
+    source 'path.erb'
+    variables(:path => new_resource.path)
+    user new_resource.user
+    group new_resource.group
+    mode '0755'
+    action :create
+    cookbook 'vsts_agent'
+    notifies :restart, service_id, :immediately
+    only_if { new_resource.path }
+  end
+
+  template "#{new_resource.install_dir}/.env" do
+    source 'env.erb'
+    variables(:env => new_resource.env)
+    user new_resource.user
+    group new_resource.group
+    mode '0755'
+    cookbook 'vsts_agent'
+    notifies :restart, service_id, :immediately
+    action :create
+  end
 end
 
 action :remove do
-  if @current_resource.exists
+  if @current_resource.exists # ~FC023
     converge_by("Removing agent '#{current_resource.agent_name}'") do
-      remove_agent(current_resource, new_resource)
+      remove_agent(current_resource)
       ruby_block "remove state for agent '#{current_resource.agent_name}'" do
         block do
           remove_current_state(current_resource, node)
@@ -149,77 +171,50 @@ action :remove do
 end
 
 action :restart do
-  if @current_resource.exists
+  if @current_resource.exists # ~FC023
     converge_by("Restarting agent '#{current_resource.agent_name}'") do
-      manage_service('restart', current_resource) if current_resource.runasservice
+      vsts_agent_service current_resource.agent_name do
+        install_dir current_resource.install_dir
+        user current_resource.user
+        group current_resource.group
+        action :restart
+      end
+
       log "'#{current_resource.agent_name}' agent was restarted"
       new_resource.updated_by_last_action(true)
     end
   end
 end
 
-def remove_agent(current_resource, new_resource)
-  manage_service('uninstall', current_resource) if current_resource.runasservice
+# rubocop:disable all
+def remove_agent(resource)
+  vsts_agent_service "Restart service #{resource.agent_name}" do
+    name resource.agent_name
+    install_dir resource.install_dir
+    user resource.user
+    group resource.group
+    action [:stop, :disable]
+    only_if { service_exist?(resource.install_dir) }
+  end
 
   args = {
     'remove' => nil,
     'unattended' => nil
   }
 
-  set_auth(args, new_resource)
+  set_auth(args, resource)
 
-  execute "Unconfiguring agent '#{current_resource.agent_name}'" do
-    cwd "#{current_resource.install_dir}/bin"
+  execute "Unconfiguring agent '#{resource.agent_name}'" do
+    cwd "#{resource.install_dir}/bin"
     command vsagentexec(args)
     sensitive true if respond_to?(:sensitive)
     action :run
+    only_if { agent_exists?(resource.install_dir) }
   end
 
-  directory current_resource.install_dir do
+  directory resource.install_dir do
     recursive true
     action :delete
   end
 end
-
-def manage_service(operation, resource)
-  if windows?
-    manage_windows_service(operation, resource)
-  else
-    manage_unix_service(operation, resource)
-  end
-end
-
-def manage_windows_service(operation, resource)
-  if operation == 'restart' || operation == 'stop'
-    a = [operation.to_sym]
-  elsif operation == 'uninstall'
-    a = [:stop, :disable]
-  else
-    return # unsupported operations
-  end
-  sn = service_name(resource)
-  service sn do
-    action a
-    ignore_failure true
-  end
-end
-
-def manage_unix_service(operation, resource)
-  cmd = if operation == 'restart'
-          './svc.sh stop && ./svc.sh start'
-        elsif operation == 'uninstall'
-          './svc.sh stop && ./svc.sh uninstall'
-        else
-          "./svc.sh #{operation}"
-        end
-  envvars = { 'HOME' => "/Users/#{resource.user}" }
-  execute "Run action '#{operation}' on service for '#{resource.agent_name}'" do
-    cwd resource.install_dir
-    command cmd
-    user resource.user if osx?
-    group resource.group if osx?
-    environment envvars if osx?
-    action :run
-    ignore_failure true
-  end
-end
+# rubocop:enable all
