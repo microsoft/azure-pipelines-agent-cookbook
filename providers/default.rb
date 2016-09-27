@@ -26,6 +26,7 @@ action :install do
     user new_resource.user
     group new_resource.group
     action :nothing
+    only_if { new_resource.runasservice }
   end
 
   service_id = "vsts_agent_service[#{new_resource.agent_name}]"
@@ -112,12 +113,13 @@ action :install do
         group new_resource.group
         mode '0755'
         action :create
-        only_if { osx? }
+        only_if { osx? && new_resource.runasservice }
       end
 
       log "Trigger service installation for agent #{new_resource.agent_name}" do
-        notifies :enable, service_id, :immediately
+        notifies :enable, service_id, :immediately if new_resource.runasservice
       end
+
 
       ruby_block "save state for agent '#{new_resource.agent_name}'" do
         block do
@@ -138,7 +140,7 @@ action :install do
     mode '0755'
     action :create
     cookbook 'vsts_agent'
-    notifies :restart, service_id, :immediately
+    notifies :restart, service_id, :immediately if new_resource.runasservice
     only_if { new_resource.path }
   end
 
@@ -149,7 +151,7 @@ action :install do
     group new_resource.group
     mode '0755'
     cookbook 'vsts_agent'
-    notifies :restart, service_id, :immediately
+    notifies :restart, service_id, :immediately if new_resource.runasservice
     action :create
   end
 end
@@ -178,6 +180,7 @@ action :restart do
         user current_resource.user
         group current_resource.group
         action :restart
+        only_if { current_resource.runasservice }
       end
 
       log "'#{current_resource.agent_name}' agent was restarted"
