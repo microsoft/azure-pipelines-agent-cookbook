@@ -89,8 +89,6 @@ action :install do
         if windows? && new_resource.windowslogonpassword
           args['windowslogonpassword'] = new_resource.windowslogonpassword
         end
-      else
-        args['nostart'] = nil
       end
 
       set_auth(args, new_resource)
