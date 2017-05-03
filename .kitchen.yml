@@ -22,20 +22,20 @@ platforms:
     driver_config:
       box: ubuntu/xenial64
     provisioner:
-      require_chef_omnibus: 12.4.3
+      require_chef_omnibus: 13.0.118
 
   - name: centos6
     driver_config:
       box: bento/centos-6.7
     provisioner:
-      require_chef_omnibus: 12.4.3
+      require_chef_omnibus: 12.20.3
 
 # private boxes
   - name: osx109-desktop
     driver_config:
       box: osx109-desktop #private
     provisioner:
-      require_chef_omnibus: 12.4.3
+      require_chef_omnibus: 13.0.118
 
   - name: windows10
     driver_config:
@@ -43,16 +43,7 @@ platforms:
       communicator: 'winrm'
       box: win10x64-enterprise #private
     provisioner:
-      require_chef_omnibus: 12.4.3
-
-  - name: windows81
-    driver_config:
-      guest: windows
-      communicator: 'winrm'
-      box: win81x64-enterprise #private
-    provisioner:
-      require_chef_omnibus: 12.4.3
-
+      require_chef_omnibus: 12.20.3
 
 suites:
   - name: windows-basic

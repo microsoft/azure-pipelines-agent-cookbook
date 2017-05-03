@@ -11,7 +11,7 @@ def whyrun_supported?
 end
 
 def load_current_resource
-  @current_resource = Chef::Resource::VstsAgent.new(@new_resource.name)
+  @current_resource = Chef::ResourceResolver.resolve(:vsts_agent).new(@new_resource.name)
   @current_resource.agent_name(@new_resource.agent_name)
   @current_resource.vsts_token(@new_resource.vsts_token)
   load_current_state(@current_resource, node)
