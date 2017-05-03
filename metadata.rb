@@ -8,7 +8,7 @@ source_url       'https://github.com/Microsoft/vsts-agent-cookbook' if respond_t
 issues_url       'https://github.com/Microsoft/vsts-agent-cookbook/issues' if respond_to?(:issues_url)
 version          '1.2.0'
 
-%w( ubuntu debian mac_os_x mac_os_x_server windows ).each do |os|
+%w(ubuntu debian mac_os_x mac_os_x_server windows).each do |os|
   supports os
 end
 

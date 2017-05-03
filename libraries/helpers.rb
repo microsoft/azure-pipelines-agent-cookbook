@@ -76,9 +76,9 @@ module VSTS
            node['vsts_agent']['agents'][agent_name].nil? ||
            node['vsts_agent']['agents'][agent_name]['install_dir'].nil? ||
            node['vsts_agent']['agents'][agent_name]['install_dir'].empty?
-          return false
+          false
         else
-          return true
+          true
         end
       end
 

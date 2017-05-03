@@ -18,10 +18,11 @@ def load_current_resource
   @current_resource
 end
 
+# rubocop:disable Metrics/BlockLength
 action :install do
   version = new_resource.version || node['vsts_agent']['binary']['version']
 
-  vsts_agent_service new_resource.agent_name do
+  vsts_agent_service new_resource.agent_name do # ~FC021
     install_dir new_resource.install_dir
     user new_resource.user
     group new_resource.group
@@ -118,7 +119,6 @@ action :install do
         notifies :enable, service_id, :immediately if new_resource.runasservice
       end
 
-
       ruby_block "save state for agent '#{new_resource.agent_name}'" do
         block do
           save_vars(new_resource, node)
@@ -153,6 +153,7 @@ action :install do
     action :create
   end
 end
+# rubocop:enable Metrics/BlockLength
 
 action :remove do
   if @current_resource.exists # ~FC023
