@@ -1,4 +1,4 @@
-default['vsts_agent']['binary']['version'] = '2.110.0'
+default['vsts_agent']['binary']['version'] = '2.116.1'
 
 case node['platform_family']
 when 'windows'

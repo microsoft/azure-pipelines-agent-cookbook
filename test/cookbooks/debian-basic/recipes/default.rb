@@ -3,7 +3,7 @@ include_recipe 'apt::default'
 include_recipe 'build-essential::default'
 
 user 'vagrant' do
-  supports :manage_home => true
+  manage_home true
   comment 'Vagrant user'
   home '/home/vagrant'
   shell '/bin/bash'
@@ -11,7 +11,7 @@ user 'vagrant' do
 end
 
 user 'builder' do
-  supports :manage_home => true
+  manage_home true
   comment 'Builder user'
   home '/home/builder'
   shell '/bin/bash'
