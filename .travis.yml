@@ -14,9 +14,7 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_92c995406a15_key -iv $encrypted_92c995406a15_iv
   -in supermarket.pem.enc -out supermarket.pem -d
 deploy:
-  provider: chef-supermarket
-  user_id: vsts_agent_cookbook
-  client_key: supermarket.pem
-  cookbook_category: Others
+  provider: script
+  script: chef exec rake release
   on:
     tags: true

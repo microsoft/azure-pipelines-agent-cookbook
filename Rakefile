@@ -25,6 +25,12 @@ namespace :kitchen do
   end
 end
 
+task :supermarket do
+  exec 'chef exec knife supermarket share vsts_agent Other -o .. -k supermarket.pem -u vsts_agent_cookbook'
+end
+
 task :default => ['style', 'kitchen:linux']
 
 task :travis => ['style']
+
+task :release => ['supermarket']
