@@ -30,10 +30,17 @@ platforms:
     provisioner:
       require_chef_omnibus: 12.20.3
 
-# private boxes
+# example prive boxes
+# add a new section, rename your box, or this file
   - name: osx109-desktop
     driver_config:
       box: osx109-desktop #private
+    provisioner:
+      require_chef_omnibus: 13.0.118
+
+  - name: osx1010
+    driver:
+      box: osx1010
     provisioner:
       require_chef_omnibus: 13.0.118
 
@@ -45,18 +52,29 @@ platforms:
     provisioner:
       require_chef_omnibus: 12.20.3
 
+  - name: windows_2012_r2
+    driver_config:
+      guest: windows
+      communicator: 'winrm'
+      box: windows_2012_r2 #private
+    provisioner:
+      require_chef_omnibus: 13.0.118
+
+
+# list your box names under 'includes' for corresponding platform
 suites:
   - name: windows-basic
     run_list:
       - recipe[windows-basic::default]
     includes:
       - windows10
+      - windows_2012_r2
     attributes:
         vsts_agent_test:
             vsts_url: <%= ENV['VSTS_URL'] %>
             vsts_pool: <%= ENV['VSTS_POOL'] %>
             vsts_token: <%= ENV['VSTS_TOKEN'] %>
-            
+
   - name: debian-basic
     run_list:
       - recipe[debian-basic::default]
@@ -74,6 +92,7 @@ suites:
       - recipe[osx-basic::default]
     includes:
       - osx109-desktop
+      - osx1010
 
     attributes:
         vsts_agent_test:

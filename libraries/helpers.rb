@@ -44,8 +44,16 @@ module VSTS
         ::File.exist?("#{install_dir}/.agent")
       end
 
+      def valid_url?(resource)
+          vsts_url_pattern = /https:\/\/.*\.visualstudio\.com/
+          if vsts_url_pattern.match?(resource)
+          else
+              raise ArgumentError, "URL validation failed: \"#{resource}\" is not formatted correctly."
+          end
+      end
+
       def save_vars(resource, node)
-        VARS_TO_SAVE.each { |var| node.set['vsts_agent']['agents'][resource.agent_name][var] = resource.send(var) if resource.respond_to?(var.to_sym) }
+        VARS_TO_SAVE.each { |var| node.default['vsts_agent']['agents'][resource.agent_name][var] = resource.send(var) if resource.respond_to?(var.to_sym) }
         node.save
       end
 
@@ -83,7 +91,7 @@ module VSTS
       end
 
       def remove_current_state(resource, node)
-        node.set['vsts_agent']['agents'][resource.agent_name] = {}
+        node.default['vsts_agent']['agents'][resource.agent_name] = {}
         node.save
       end
 

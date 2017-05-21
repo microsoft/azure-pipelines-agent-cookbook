@@ -5,6 +5,6 @@ One of the easiest ways to contribute is to participate in discussions and discu
 Please start a discussion on the [issue tracker](https://github.com/Microsoft/vsts-agent-cookbook/issues).
 
 ## Contributing code and content
-Get familiar with github pull requests https://help.github.com/articles/using-pull-requests/
+Get familiar with GitHub pull requests https://help.github.com/articles/using-pull-requests/
 
 You will need to sign a [Contributor License Agreement](https://cla2.dotnetfoundation.org/) before submitting your pull request.

@@ -12,6 +12,7 @@ version          '1.2.0'
   supports os
 end
 
+depends 'homebrew'
 depends 'windows'
 depends 'ark'
 depends 'seven_zip', '~> 2.0.0'

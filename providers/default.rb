@@ -31,6 +31,7 @@ action :install do
   end
 
   service_id = "vsts_agent_service[#{new_resource.agent_name}]"
+  valid_url? new_resource.vsts_url
 
   if @current_resource.exists
     Chef::Log.info "'#{new_resource.agent_name}' agent '#{current_resource.version}' already exists - nothing to do"
