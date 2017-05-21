@@ -1,3 +1,5 @@
+include_recipe 'ark::default'
+
 if platform_family?('debian') && node['vsts_agent']['prerequisites']['debian']['install']
   package 'libunwind8'
   package 'libcurl3'
