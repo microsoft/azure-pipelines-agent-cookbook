@@ -12,6 +12,8 @@ version          '1.2.0'
   supports os
 end
 
+chef_version '>= 12.4' if respond_to?(:chef_version)
+
 depends 'windows'
 depends 'ark'
 depends 'seven_zip', '~> 2.0.0'
