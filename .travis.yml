@@ -10,11 +10,8 @@ addons:
     packages:
     - chefdk
 script: chef exec rake travis
-before_install:
-- openssl aes-256-cbc -K $encrypted_92c995406a15_key -iv $encrypted_92c995406a15_iv
-  -in supermarket.pem.enc -out supermarket.pem -d
 deploy:
   provider: script
-  script: chef exec rake release
+  script: openssl aes-256-cbc -K $encrypted_92c995406a15_key -iv $encrypted_92c995406a15_iv -in supermarket.pem.enc -out supermarket.pem -d && chef exec rake release
   on:
     tags: true
