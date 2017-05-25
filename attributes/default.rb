@@ -17,6 +17,5 @@ when 'mac_os_x', 'mac_os_x_server'
 end
 
 default['vsts_agent']['prerequisites']['osx']['install'] = true
-
 default['vsts_agent']['prerequisites']['debian']['install'] = true
 default['vsts_agent']['prerequisites']['debian']['libicu52']['url'] = 'http://security.ubuntu.com/ubuntu/pool/main/i/icu/libicu52_52.1-8ubuntu0.2_amd64.deb'
