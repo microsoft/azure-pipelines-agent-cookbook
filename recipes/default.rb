@@ -7,7 +7,7 @@ if platform_family?('debian') && node['vsts_agent']['prerequisites']['debian']['
     package 'libicu52'
   end
 
-elsif (platform_family?('mac_os_x') || platform_family?('mac_os_x_server'))
+elsif platform_family?('mac_os_x') || platform_family?('mac_os_x_server')
   include_recipe 'homebrew'
 
   package 'openssl' # Reference: https://www.microsoft.com/net/core#macos
