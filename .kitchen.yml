@@ -30,17 +30,25 @@ platforms:
     provisioner:
       require_chef_omnibus: 12.20.3
 
-# example prive boxes
-# add a new section, rename your box, or this file
+# The following platforms are private boxes and are not available from the vagrant box repository
+# Follow instructions provided in TESTING.md to create a box
+
+# To a use a private box:
+# 1. Create a box. To do so, follow the instructions in TESTING.md
+# 2. Once you've added the vagrant box, modify this file to use it
+# 3. In the 'suites' section of this file, list your box name(s) under 'includes' for the corresponding platform
+# 4. Confirm your box shows up when running `vagrant box list` and `kitchen list` when in this cookbook directory
+
   - name: osx109-desktop
     driver_config:
-      box: osx109-desktop #private
+      box: osx109-desktop
     provisioner:
       require_chef_omnibus: 13.0.118
 
   - name: osx1010
     driver:
       box: osx1010
+      username: <%= ENV['BOX_USERNAME'] %>
     provisioner:
       require_chef_omnibus: 13.0.118
 
@@ -48,29 +56,28 @@ platforms:
     driver_config:
       guest: windows
       communicator: 'winrm'
-      box: win10x64-enterprise #private
+      box: win10x64-enterprise
     provisioner:
       require_chef_omnibus: 12.20.3
 
-  - name: windows_2012_r2
+  - name: windows-2012-r2
     driver_config:
       guest: windows
       communicator: 'winrm'
-      box: windows_2012_r2 #private
+      box: windows-2012-r2
     provisioner:
       require_chef_omnibus: 13.0.118
 
-
-# list your box names under 'includes' for corresponding platform
 suites:
   - name: windows-basic
     run_list:
       - recipe[windows-basic::default]
     includes:
       - windows10
-      - windows_2012_r2
+      - windows-2012-r2
     attributes:
         vsts_agent_test:
+            username: <%= ENV['BOX_USERNAME'] %>
             vsts_url: <%= ENV['VSTS_URL'] %>
             vsts_pool: <%= ENV['VSTS_POOL'] %>
             vsts_token: <%= ENV['VSTS_TOKEN'] %>
@@ -83,6 +90,7 @@ suites:
       - ubuntu1604
     attributes:
         vsts_agent_test:
+            username: <%= ENV['BOX_USERNAME'] %>
             vsts_url: <%= ENV['VSTS_URL'] %>
             vsts_pool: <%= ENV['VSTS_POOL'] %>
             vsts_token: <%= ENV['VSTS_TOKEN'] %>
@@ -96,6 +104,8 @@ suites:
 
     attributes:
         vsts_agent_test:
+            username: <%= ENV['BOX_USERNAME'] %>
             vsts_url: <%= ENV['VSTS_URL'] %>
             vsts_pool: <%= ENV['VSTS_POOL'] %>
             vsts_token: <%= ENV['VSTS_TOKEN'] %>
+
