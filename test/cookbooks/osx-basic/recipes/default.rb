@@ -15,6 +15,11 @@ vsts_agent agent1_name do
   action :remove
 end
 
+vsts_agent agent2_name do
+  vsts_token node['vsts_agent_test']['vsts_token']
+  action :remove
+end
+
 # Agent1
 vsts_agent agent1_name do
   install_dir "#{agents_dir}/#{agent1_name}"
@@ -50,4 +55,9 @@ end
 
 vsts_agent agent2_name do
   action :restart
+end
+
+vsts_agent agent2_name do
+  vsts_token node['vsts_agent_test']['vsts_token']
+  action :remove
 end
