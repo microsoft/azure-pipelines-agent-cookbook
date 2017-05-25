@@ -9,8 +9,8 @@ issues_url       'https://github.com/Microsoft/vsts-agent-cookbook/issues' if re
 chef_version     '>= 12.4' if respond_to?(:chef_version)
 version          '1.2.0'
 
-%w(ubuntu debian mac_os_x mac_os_x_server windows).each do |os|
-  supports os
+%w[ubuntu debian mac_os_x mac_os_x_server windows].each do |operating_system|
+  supports operating_system
 end
 
 depends 'homebrew'
