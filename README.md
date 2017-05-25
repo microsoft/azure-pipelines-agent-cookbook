@@ -18,6 +18,7 @@ The following platforms are tested and supported:
 - Debian 8 x64 (Jessie)
 - Ubuntu 16.04
 - Windows 10
+- Windows Server 2012 R2
 - OS X 10.10.5
 - OS X 10.11.4
 
