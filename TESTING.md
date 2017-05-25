@@ -39,9 +39,9 @@ export VSTS_USER=username
 export VSTS_TOKEN=my_secret_token_from_vsts
 ```
 
-If the username of the box you're testing against happens to differ from "vagrant":
+If the username of the box you're testing differs from standard "vagrant":
 ```
-export BOX_USERNAME=vagrant_box_username
+export BOX_USERNAME=username
 ```
 
 #### Executing the tests
@@ -59,11 +59,9 @@ kitchen test VAGRANT_BOX_NAME
 :small_red_triangle: The Windows and Mac boxes must be [built](#guides-for-building-mac-and-windows-boxes) prior to testing. Once built, you'll need to modify the `.kitchen.yml` file. To find out list of available boxes and their names, simply execute `vagrant box list`. See the [Chef documentation](https://docs.chef.io/config_yml_kitchen.html) or comments in `.kitchen.yml` for how to modify it for your boxes.
 
 #### Style Testing
-Ruby and Chef ([Foodcritic](http://www.foodcritic.io/)) style checks can be performed by running:
-```
-chef exec rake style
-```
-or
-```
-rake style
-```
+Several style checks can be performed by running any of the following:
+
+`$ chef exec rake style`  
+`$ rake style`  
+`$ foodcritic .`  
+`$ rubocop .`  
