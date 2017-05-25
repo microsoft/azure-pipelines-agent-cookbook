@@ -2,6 +2,4 @@
 default['vsts_agent_test']['vsts_url'] = nil
 default['vsts_agent_test']['vsts_pool'] = nil
 default['vsts_agent_test']['vsts_token'] = nil
-
-# adjust username here if box uses something other than vagrant
-default['username'] = 'vagrant'
+default['vsts_agent_test']['username'] = 'vagrant'

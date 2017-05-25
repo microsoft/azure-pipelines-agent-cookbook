@@ -6,7 +6,7 @@ user 'builder' do
   password 'Pas$w0r_d'
 end
 
-grant_logon_as_service 'vagrant'
+grant_logon_as_service node['vsts_agent_test']['username']
 grant_logon_as_service 'builder'
 
 #### End prepare system ####
@@ -42,8 +42,8 @@ vsts_agent agent1_name do
   vsts_url node['vsts_agent_test']['vsts_url']
   vsts_pool node['vsts_agent_test']['vsts_pool']
   vsts_token node['vsts_agent_test']['vsts_token']
-  windowslogonaccount 'vagrant'
-  windowslogonpassword 'vagrant'
+  windowslogonaccount node['vsts_agent_test']['username']
+  windowslogonpassword node['vsts_agent_test']['username']
   action :install
 end
 
