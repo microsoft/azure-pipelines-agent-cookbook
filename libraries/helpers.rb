@@ -6,7 +6,7 @@ module VSTS
 
       require 'json'
 
-      VARS_TO_SAVE = %w[install_dir user group].freeze
+      VARS_TO_SAVE = %w(install_dir user group).freeze
 
       def archive_name(resource)
         name = 'vsts_agent'

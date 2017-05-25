@@ -1,11 +1,11 @@
 LineLength:
   Max: 300
 
-Layout/AlignParameters:
+Style/AlignParameters:
   Exclude:
     - '**/metadata.rb'
 
-Layout/SpaceBeforeFirstArg:
+Style/SpaceBeforeFirstArg:
   Exclude:
     - '**/metadata.rb'
 
