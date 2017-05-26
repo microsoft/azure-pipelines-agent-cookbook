@@ -16,8 +16,7 @@ module VSTS
 
       def download_url(version, node)
         url = node['vsts_agent']['binary']['url']
-        url = url.gsub '%s', version
-        url
+        url.gsub '%s', version
       end
 
       def windows?
@@ -44,8 +43,13 @@ module VSTS
         ::File.exist?("#{install_dir}/.agent")
       end
 
+      def valid_vsts_url?(url)
+        vsts_url_pattern = %r{https:\/\/.*\.visualstudio\.com}
+        vsts_url_pattern.match(url)
+      end
+
       def save_vars(resource, node)
-        VARS_TO_SAVE.each { |var| node.set['vsts_agent']['agents'][resource.agent_name][var] = resource.send(var) if resource.respond_to?(var.to_sym) }
+        VARS_TO_SAVE.each { |var| node.default['vsts_agent']['agents'][resource.agent_name][var] = resource.send(var) if resource.respond_to?(var.to_sym) }
         node.save
       end
 
@@ -64,7 +68,7 @@ module VSTS
       end
 
       def load_data_from_json(resource)
-        f = ::File.read(::File.join(resource.install_dir, '.agent'), :mode => 'r:bom|utf-8').strip
+        f = ::File.read(::File.join(resource.install_dir, '.agent'), mode: 'r:bom|utf-8').strip
         agent = JSON.parse(f)
         resource.vsts_url(agent['serverUrl'])
         resource.vsts_pool(agent['poolName'])
@@ -83,7 +87,7 @@ module VSTS
       end
 
       def remove_current_state(resource, node)
-        node.set['vsts_agent']['agents'][resource.agent_name] = {}
+        node.default['vsts_agent']['agents'][resource.agent_name] = {}
         node.save
       end
 
@@ -100,13 +104,13 @@ module VSTS
       def vsagentexec(args = {})
         command = 'Agent.Listener '
         command = './' + command unless windows?
-        args.each { |key, value| command += append_arguments(key, value) + ' ' }
+        args.each { |key, value| command += append_arguments(key.to_s, value.to_s) + ' ' }
         command
       end
 
       def append_arguments(key, value)
         result = ''
-        if key == 'configure' || key == 'remove'
+        if key.include?('configure') || key.include?('remove')
           result += key
         else
           result += "--#{key}"

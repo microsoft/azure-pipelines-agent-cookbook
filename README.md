@@ -18,12 +18,14 @@ The following platforms are tested and supported:
 - Debian 8 x64 (Jessie)
 - Ubuntu 16.04
 - Windows 10
-- Mac OS X 10.11.4 
+- Windows Server 2012 R2
+- OS X 10.10.5
+- OS X 10.11.4
 
 Attributes
 ----------
 * `node['vsts_agent']['binary']['version']` - set version of package to install
-* `node['vsts_agent']['prerequisites']['osx']['install']` - control osx dependencies installation. Default true
+* `node['vsts_agent']['prerequisites']['osx']['install']` - control macos dependencies installation. Default true
 * `node['vsts_agent']['prerequisites']['debian']['install']` - control debian dependencies installation. Default true
 
 Resource/Provider
@@ -39,8 +41,8 @@ This resource installs and configures the vsts build and release agent
 - `agent_name`: Name attribute. The name of the vsts agent
 - `version`: an agent version to install. Default version from an attribute
 - `install_dir`: A target directory to install the vsts agent
-- `path`: Overwrite system PATH environment variable values. Linux and Mac OS X only
-- `env`: Additional environment variables. Linux and Mac OS X only 
+- `path`: Overwrite system PATH environment variable values. Linux and macOS only
+- `env`: Additional environment variables. Linux and macOS only
 - `user`: Set a local user to run the vsts agent
 - `group`: Set a local group to run the vsts agent
 - `runasservice`: run agent as a service. Default 'true'

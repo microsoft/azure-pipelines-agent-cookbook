@@ -12,7 +12,7 @@ namespace :style do
 end
 
 desc 'Run all style checks'
-task :style => ['style:chef', 'style:ruby']
+task style: ['style:chef', 'style:ruby']
 
 desc 'Run ChefSpec'
 RSpec::Core::RakeTask.new(:spec)
@@ -29,8 +29,8 @@ task :supermarket do
   exec 'chef exec knife supermarket share vsts_agent Other -o .. -k supermarket.pem -u vsts_agent_cookbook'
 end
 
-task :default => ['style', 'kitchen:linux']
+task default: ['style', 'kitchen:linux']
 
-task :travis => ['style']
+task travis: ['style']
 
-task :release => ['supermarket']
+task release: ['supermarket']

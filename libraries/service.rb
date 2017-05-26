@@ -14,10 +14,10 @@ class Chef
 
       default_action :enable
 
-      attribute :name, :kind_of => String, :name_attribute => true
-      attribute :install_dir, :kind_of => String
-      attribute :user, :kind_of => String
-      attribute :group, :kind_of => String
+      attribute :name, kind_of: String, name_attribute: true
+      attribute :install_dir, kind_of: String
+      attribute :user, kind_of: String
+      attribute :group, kind_of: String
     end
   end
 end
@@ -94,13 +94,13 @@ class Chef
         elsif operation == 'disable'
           operation = 'uninstall'
         end
-        envvars = { 'HOME' => "/Users/#{new_resource.user}" }
+        envvars = { HOME: "/Users/#{new_resource.user}" }
         execute "Run action '#{operation}' on service '#{new_resource.name}'" do
           cwd new_resource.install_dir
           command "./svc.sh #{operation}"
           user new_resource.user if osx?
           group new_resource.group if osx?
-          environment envvars if osx?
+          environment envvars.to_s if osx?
           action :run
           retries 3
         end

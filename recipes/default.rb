@@ -1,5 +1,3 @@
-include_recipe 'ark::default'
-
 if platform_family?('debian') && node['vsts_agent']['prerequisites']['debian']['install']
   package 'libunwind8'
   package 'libcurl3'
@@ -7,29 +5,24 @@ if platform_family?('debian') && node['vsts_agent']['prerequisites']['debian']['
     package 'libicu52'
   end
 
-elsif (platform_family?('mac_os_x') || platform_family?('mac_os_x_server')) && node['vsts_agent']['prerequisites']['osx']['install']
-  cpu = node['cpu'] ? node['cpu']['total'].to_i : 2
-  version = node['vsts_agent']['prerequisites']['osx']['openssl']['version']
-  ark 'openssl' do
-    url node['vsts_agent']['prerequisites']['osx']['openssl']['url']
-    backup false
-    path Chef::Config[:file_cache_path]
-    action :put
+elsif platform_family?('mac_os_x') || platform_family?('mac_os_x_server') && node['vsts_agent']['prerequisites']['osx']['install']
+
+  include_recipe 'homebrew'
+
+  package 'openssl' # Reference: https://www.microsoft.com/net/core#macos
+
+  execute 'configure brew-installed openssl' do
+    command 'mkdir -p /usr/local/lib/'
+    action :run
   end
 
-  bash "Make openssl #{version}" do
-    cwd "#{Chef::Config[:file_cache_path]}/openssl"
-    code <<-EOH
-      ./configure shared darwin64-x86_64-cc --prefix=/usr/local/openssl-#{version}
-      make depend
-      make -j #{cpu}
-      make install
-      rm -rf /usr/local/openssl /usr/local/bin/openssl
-      ln -s /usr/local/openssl-#{version} /usr/local/openssl
-      ln -s /usr/local/openssl/bin/openssl /usr/local/bin/openssl
-      mkdir -p /usr/local/lib
-      cp /usr/local/openssl/lib/lib* /usr/local/lib/
-    EOH
-    not_if "/usr/local/bin/openssl version |grep #{version}"
+  execute 'link libcrypto dylib' do
+    command 'ln -sf /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/'
+    action :run
+  end
+
+  execute 'link libssl dylib' do
+    command 'ln -sf /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/'
+    action :run
   end
 end

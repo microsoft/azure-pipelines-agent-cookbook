@@ -32,6 +32,8 @@ action :install do
 
   service_id = "vsts_agent_service[#{new_resource.agent_name}]"
 
+  raise ArgumentError, "URL validation failed: \"#{new_resource.vsts_url}\" is not formatted correctly." unless valid_vsts_url? new_resource.vsts_url
+
   if @current_resource.exists
     Chef::Log.info "'#{new_resource.agent_name}' agent '#{current_resource.version}' already exists - nothing to do"
   else
@@ -59,7 +61,7 @@ action :install do
 
       directory new_resource.install_dir do
         recursive true
-        rights :full_control, new_resource.user, :applies_to_children => true if windows?
+        rights :full_control, new_resource.user, applies_to_children: true if windows?
         user new_resource.user
         group new_resource.group
         mode '0755'
@@ -73,22 +75,22 @@ action :install do
       end
 
       args = {
-        'configure' => nil,
-        'unattended' => nil,
-        'replace' => nil,
-        'url' => new_resource.vsts_url,
-        'pool' => new_resource.vsts_pool,
-        'agent' => new_resource.agent_name,
-        'work' => new_resource.work_folder
+        configure: nil,
+        unattended: nil,
+        replace: nil,
+        url: new_resource.vsts_url,
+        pool: new_resource.vsts_pool,
+        agent: new_resource.agent_name,
+        work: new_resource.work_folder
       }
 
       if new_resource.runasservice
-        args['runasservice'] = nil
+        args[:runasservice] = nil
         if windows?
-          args['windowslogonaccount'] = new_resource.windowslogonaccount
+          args[:windowslogonaccount] = new_resource.windowslogonaccount
         end
         if windows? && new_resource.windowslogonpassword
-          args['windowslogonpassword'] = new_resource.windowslogonpassword
+          args[:windowslogonaccount] = new_resource.windowslogonpassword
         end
       end
 
@@ -132,7 +134,7 @@ action :install do
 
   template "#{new_resource.install_dir}/.path" do
     source 'path.erb'
-    variables(:path => new_resource.path)
+    variables(path: new_resource.path)
     user new_resource.user
     group new_resource.group
     mode '0755'
@@ -144,7 +146,7 @@ action :install do
 
   template "#{new_resource.install_dir}/.env" do
     source 'env.erb'
-    variables(:env => new_resource.env)
+    variables(env: new_resource.env)
     user new_resource.user
     group new_resource.group
     mode '0755'
@@ -200,8 +202,8 @@ def remove_agent(resource)
   end
 
   args = {
-    'remove' => nil,
-    'unattended' => nil
+    remove: nil,
+    unattended: nil
   }
 
   set_auth(args, resource)
