@@ -1,5 +1,3 @@
-include_recipe 'ark::default'
-
 if platform_family?('debian') && node['vsts_agent']['prerequisites']['debian']['install']
   package 'libunwind8'
   package 'libcurl3'
@@ -8,6 +6,7 @@ if platform_family?('debian') && node['vsts_agent']['prerequisites']['debian']['
   end
 
 elsif platform_family?('mac_os_x') || platform_family?('mac_os_x_server') && node['vsts_agent']['prerequisites']['osx']['install']
+
   include_recipe 'homebrew'
 
   package 'openssl' # Reference: https://www.microsoft.com/net/core#macos
