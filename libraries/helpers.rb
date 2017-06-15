@@ -49,7 +49,7 @@ module VSTS
       end
 
       def save_vars(resource, node)
-        VARS_TO_SAVE.each { |var| node.default['vsts_agent']['agents'][resource.agent_name][var] = resource.send(var) if resource.respond_to?(var.to_sym) }
+        VARS_TO_SAVE.each { |var| node.normal['vsts_agent']['agents'][resource.agent_name][var] = resource.send(var) if resource.respond_to?(var.to_sym) }
         node.save
       end
 
@@ -87,7 +87,7 @@ module VSTS
       end
 
       def remove_current_state(resource, node)
-        node.default['vsts_agent']['agents'][resource.agent_name] = {}
+        node.normal['vsts_agent']['agents'][resource.agent_name] = {}
         node.save
       end
 
