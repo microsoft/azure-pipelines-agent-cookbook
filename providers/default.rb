@@ -70,7 +70,7 @@ action :install do
 
       execute "Move #{new_resource.agent_name} agent from intermidiate folder" do
         command "cp -r #{unpack_dir}/#{archive_name}/* #{new_resource.install_dir}" unless windows?
-        command "xcopy #{unpack_dir}\\#{archive_name}\\* #{win_friendly_path(new_resource.install_dir)} /s /e" if windows?
+        command "xcopy #{unpack_dir}\\#{archive_name}\\* #{win_friendly_path(new_resource.install_dir)} /s /e /q" if windows?
         action :run
       end
 
@@ -90,7 +90,7 @@ action :install do
           args[:windowslogonaccount] = new_resource.windowslogonaccount
         end
         if windows? && new_resource.windowslogonpassword
-          args[:windowslogonaccount] = new_resource.windowslogonpassword
+          args[:windowslogonpassword] = new_resource.windowslogonpassword
         end
       end
 
