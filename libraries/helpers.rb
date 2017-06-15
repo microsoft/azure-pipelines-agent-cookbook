@@ -104,7 +104,7 @@ module VSTS
       def vsagentexec(args = {})
         command = 'Agent.Listener '
         command = './' + command unless windows?
-        args.each { |key, value| command += append_arguments(key.to_s, value.to_s) + ' ' }
+        args.each { |key, value| command += append_arguments(key.to_s, value) + ' ' }
         command
       end
 
