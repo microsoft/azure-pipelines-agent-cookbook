@@ -1,19 +1,2 @@
-LineLength:
-  Max: 300
-
-Style/AlignParameters:
-  Exclude:
-    - '**/metadata.rb'
-
-Style/SpaceBeforeFirstArg:
-  Exclude:
-    - '**/metadata.rb'
-
-Metrics/MethodLength:
-  Max: 30
-
-Metrics/AbcSize:
-  Max: 30
-
 EndOfLine:
   Enabled: false

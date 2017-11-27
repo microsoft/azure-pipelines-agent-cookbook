@@ -8,6 +8,7 @@ driver:
 
 provisioner:
   name: chef_zero
+  log_level: auto
   client_rb:
       add_formatter: doc
 
@@ -17,16 +18,28 @@ platforms:
       box: debian/jessie64
     provisioner:
       require_chef_omnibus: 12.20.3
+  
+  - name: debian9
+    driver_config:
+      box: debian/stretch64
+    provisioner:
+      require_chef_omnibus: 13.6.4
 
   - name: ubuntu1604
     driver_config:
       box: ubuntu/xenial64
     provisioner:
-      require_chef_omnibus: 13.0.118
-
-  - name: centos6
+      require_chef_omnibus: 13.6.4
+    
+  - name: ubuntu1710
     driver_config:
-      box: bento/centos-6.7
+      box: ubuntu/artful64
+    provisioner:
+      require_chef_omnibus: 13.6.4
+
+  - name: centos7
+    driver_config:
+      box: centos/7
     provisioner:
       require_chef_omnibus: 12.20.3
 
@@ -39,18 +52,12 @@ platforms:
 # 3. In the 'suites' section of this file, list your box name(s) under 'includes' for the corresponding platform
 # 4. Confirm your box shows up when running `vagrant box list` and `kitchen list` when in this cookbook directory
 
-  - name: osx109-desktop
-    driver_config:
-      box: osx109-desktop
-    provisioner:
-      require_chef_omnibus: 13.0.118
-
-  - name: osx1010
+  - name: osx1012
     driver:
-      box: osx1010
+      box: osx1012
       username: <%= ENV['BOX_USERNAME'] %>
     provisioner:
-      require_chef_omnibus: 13.0.118
+      require_chef_omnibus: 13.6.4
 
   - name: windows10
     driver_config:
@@ -58,7 +65,7 @@ platforms:
       communicator: 'winrm'
       box: win10x64-enterprise
     provisioner:
-      require_chef_omnibus: 12.20.3
+      require_chef_omnibus: 13.6.4
 
   - name: windows-2012-r2
     driver_config:
@@ -82,12 +89,16 @@ suites:
             vsts_pool: <%= ENV['VSTS_POOL'] %>
             vsts_token: <%= ENV['VSTS_TOKEN'] %>
 
-  - name: debian-basic
+  - name: linux-basic
     run_list:
-      - recipe[debian-basic::default]
+      - recipe[linux-basic::default]
     includes:
       - debian8
+      - debian9
       - ubuntu1604
+      - ubuntu1710
+      - centos7
+
     attributes:
         vsts_agent_test:
             username: <%= ENV['BOX_USERNAME'] %>
@@ -99,8 +110,7 @@ suites:
     run_list:
       - recipe[osx-basic::default]
     includes:
-      - osx109-desktop
-      - osx1010
+      - osx1012
 
     attributes:
         vsts_agent_test:

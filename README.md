@@ -16,7 +16,10 @@ Requirements
 ### Platforms
 The following platforms are tested and supported:
 - Debian 8 x64 (Jessie)
-- Ubuntu 16.04
+- Debian 9 x64 (Stretch)
+- Ubuntu 16.04 (Xenial Xerus)
+- Ubuntu 17.10 (Artful Aardvark)
+- CentOS 7
 - Windows 10
 - Windows Server 2012 R2
 - OS X 10.10.5
@@ -25,8 +28,8 @@ The following platforms are tested and supported:
 Attributes
 ----------
 * `node['vsts_agent']['binary']['version']` - set version of package to install
-* `node['vsts_agent']['prerequisites']['osx']['install']` - control macos dependencies installation. Default true
-* `node['vsts_agent']['prerequisites']['debian']['install']` - control debian dependencies installation. Default true
+* `node['vsts_agent']['prerequisites']['redhat']['install']` - control dependencies installation for redhat based distros(redhat, centos etc.) . Default true
+* `node['vsts_agent']['prerequisites']['debian']['install']` - control dependencies installation for debian based distros(debian, ubuntu etc.). Default true
 
 Resource/Provider
 -----------------
@@ -58,7 +61,7 @@ This resource installs and configures the vsts build and release agent
 
 #### Examples
 Install, configure, restart and remove an agent.
-Check [windows](test/cookbooks/windows-basic/recipes/default.rb), [debian](test/cookbooks/debian-basic/recipes/default.rb) or [osx](test/cookbooks/osx-basic/recipes/default.rb) tests for more examples.
+Check [windows](test/cookbooks/windows-basic/recipes/default.rb), [linux](test/cookbooks/linux-basic/recipes/default.rb) or [osx](test/cookbooks/osx-basic/recipes/default.rb) tests for more examples.
 
 ```ruby
 include_recipe 'vsts_agent::default'

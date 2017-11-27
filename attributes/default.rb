@@ -1,21 +1,16 @@
-default['vsts_agent']['binary']['version'] = '2.116.1'
+default['vsts_agent']['binary']['version'] = '2.125.1'
 
 case node['platform_family']
 when 'windows'
-  default['vsts_agent']['binary']['url'] = 'https://github.com/Microsoft/vsts-agent/releases/download/v%s/vsts-agent-win7-x64-%s.zip'
-when 'rhel'
-  default['vsts_agent']['binary']['url'] = 'https://github.com/Microsoft/vsts-agent/releases/download/v%s/vsts-agent-rhel.7.2-x64-%s.tar.gz'
-when 'debian'
-  default['vsts_agent']['binary']['url'] =
-    if platform?('ubuntu') && node['platform_version'].to_i >= 16
-      'https://github.com/Microsoft/vsts-agent/releases/download/v%s/vsts-agent-ubuntu.16.04-x64-%s.tar.gz'
-    else
-      'https://github.com/Microsoft/vsts-agent/releases/download/v%s/vsts-agent-ubuntu.14.04-x64-%s.tar.gz'
-    end
+  default['vsts_agent']['binary']['url'] = 'https://github.com/Microsoft/vsts-agent/releases/download/v%s/vsts-agent-win-x64-%s.zip'
+when 'debian', 'rhel'
+  default['vsts_agent']['binary']['url'] = 'https://github.com/Microsoft/vsts-agent/releases/download/v%s/vsts-agent-linux-x64-%s.tar.gz'
 when 'mac_os_x', 'mac_os_x_server'
-  default['vsts_agent']['binary']['url'] = 'https://github.com/Microsoft/vsts-agent/releases/download/v%s/vsts-agent-osx.10.11-x64-%s.tar.gz'
+  default['vsts_agent']['binary']['url'] = 'https://github.com/Microsoft/vsts-agent/releases/download/v%s/vsts-agent-osx-x64-%s.tar.gz'
 end
 
-default['vsts_agent']['prerequisites']['osx']['install'] = true
+# applies for debian based distros: ubuntu, debian etc...
 default['vsts_agent']['prerequisites']['debian']['install'] = true
-default['vsts_agent']['prerequisites']['debian']['libicu52']['url'] = 'http://security.ubuntu.com/ubuntu/pool/main/i/icu/libicu52_52.1-8ubuntu0.2_amd64.deb'
+
+# applies for redhat based distros: redhat, centos etc...
+default['vsts_agent']['prerequisites']['redhat']['install'] = true

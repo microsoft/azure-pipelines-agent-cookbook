@@ -1,28 +1,20 @@
+
 if platform_family?('debian') && node['vsts_agent']['prerequisites']['debian']['install']
-  package 'libunwind8'
-  package 'libcurl3'
-  unless platform?('ubuntu') && node['platform_version'].to_i >= 16
-    package 'libicu52'
+
+  %w(libunwind8 liblttng-ust0 libcurl3 libuuid1 libkrb5-3 zlib1g).each do |pkg|
+    package pkg
   end
 
-elsif platform_family?('mac_os_x') || platform_family?('mac_os_x_server') && node['vsts_agent']['prerequisites']['osx']['install']
+  package 'libssl1.0.0' unless node['platform_version'] =~ /^9.*/
+  package 'libssl1.0.2' if node['platform_version'] =~ /^9.*/
+  package 'libicu52' if node['platform_version'] =~ /^14.*/ || node['platform_version'] =~ /^8.*/
+  package 'libicu55' if node['platform_version'] =~ /^16.*/
+  package 'libicu57' if node['platform_version'] =~ /^17.*/ || node['platform_version'] =~ /^9.*/
 
-  include_recipe 'homebrew'
+elsif platform_family?('rhel') && node['vsts_agent']['prerequisites']['redhat']['install']
 
-  package 'openssl' # Reference: https://www.microsoft.com/net/core#macos
-
-  execute 'configure brew-installed openssl' do
-    command 'mkdir -p /usr/local/lib/'
-    action :run
+  %w(libunwind libcurl openssl-libs libuuid krb5-libs libicu zlib).each do |pkg|
+    package pkg
   end
 
-  execute 'link libcrypto dylib' do
-    command 'ln -sf /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/'
-    action :run
-  end
-
-  execute 'link libssl dylib' do
-    command 'ln -sf /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/'
-    action :run
-  end
 end
