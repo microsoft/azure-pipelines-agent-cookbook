@@ -3,107 +3,84 @@ require 'chef/provider/lwrp_base'
 require 'chef/mixin/shell_out'
 require 'chef/mixin/language'
 
-class Chef
-  class Resource
-    # Internal Resource/Provider to manage agent service
-    class VstsAgentService < Chef::Resource::LWRPBase
-      provides :vsts_agent_service
-      resource_name :vsts_agent_service
-
-      actions :enable, :start, :stop, :restart, :disable
-
-      default_action :enable
-
-      attribute :name, kind_of: String, name_attribute: true
-      attribute :install_dir, kind_of: String
-      attribute :user, kind_of: String
-      attribute :group, kind_of: String
-    end
-  end
-end
-
-class Chef
-  class Provider
-    # Internal Resource/Provider to manage agent service
-    class VstsAgentService < Chef::Provider::LWRPBase
-      include Chef::Mixin::ShellOut
+module VSTS
+  module Agent
+    # The service operations for vsts_agent
+    class Service
       include Windows::Helper
       include VSTS::Agent::Helpers
+      include Chef::DSL::PlatformIntrospection
 
-      use_inline_resources
-
-      action :enable do
-        unless service_exist?(new_resource.install_dir) && windows?
-          vsts_service 'install'
-          new_resource.updated_by_last_action(true)
-        end
+      def initialize(agent_name, install_dir, user, group)
+        @agent_name = agent_name
+        @install_dir = install_dir
+        @user = user
+        @group = group
       end
 
-      action :start do
-        if service_exist?(new_resource.install_dir)
-          vsts_service 'start'
-          new_resource.updated_by_last_action(true)
-        end
+      def enable
+        vsts_service 'enable' unless service_exist?(@install_dir)
       end
 
-      action :stop do
-        if service_exist?(new_resource.install_dir)
-          vsts_service 'stop'
-          new_resource.updated_by_last_action(true)
-        end
+      def start
+        vsts_service 'start' if service_exist?(@install_dir)
       end
 
-      action :restart do
-        if service_exist?(new_resource.install_dir)
-          vsts_service 'stop'
-          vsts_service 'start'
-          new_resource.updated_by_last_action(true)
-        end
+      def stop
+        vsts_service 'stop' if service_exist?(@install_dir)
       end
 
-      action :disable do
-        if service_exist?(new_resource.install_dir)
-          vsts_service 'disable'
-          new_resource.updated_by_last_action(true)
-        end
+      def restart
+        return unless service_exist?(@install_dir)
+        vsts_service 'stop'
+        vsts_service 'start'
+      end
+
+      def disable
+        vsts_service 'disable' if service_exist?(@install_dir)
+      end
+
+      # used by platforms introspection
+      def node
+        Chef.run_context.node
       end
 
       def service_name
-        @service_name ||= ::File.read("#{new_resource.install_dir}/.service").strip
+        return unless service_exist?(@install_dir)
+        @service_name ||= ::File.read("#{@install_dir}/.service").strip
       end
 
-      def vsts_service(operation)
+      def vsts_service(action)
         if windows?
-          vsts_windows_service(operation)
+          vsts_windows_service(action)
         else
-          vsts_unix_service(operation)
+          vsts_unix_service(action)
         end
       end
 
-      def vsts_windows_service(operation)
-        return if action == 'install'
-        service service_name do
-          action operation
-          retries 3
-        end
+      def vsts_windows_service(action)
+        return if action == 'enable' # service is installed by agent
+        win_service = Chef::Resource::WindowsService.new(service_name, Chef.run_context)
+        win_service.retries(3)
+        win_service.run_action(action.to_sym)
       end
 
-      def vsts_unix_service(operation)
-        if operation == 'install'
-          operation = "#{operation} #{new_resource.user}"
-        elsif operation == 'disable'
-          operation = 'uninstall'
+      def vsts_unix_service(action)
+        if action == 'enable'
+          action = "install #{@user}"
+        elsif action == 'disable'
+          action = 'uninstall'
         end
-        envvars = { HOME: "/Users/#{new_resource.user}" }
-        execute "Run action '#{operation}' on service '#{new_resource.name}'" do
-          cwd new_resource.install_dir
-          command "./svc.sh #{operation}"
-          user new_resource.user if osx?
-          group new_resource.group if osx?
-          environment envvars.to_s if osx?
-          action :run
-          retries 3
+        envvars = { HOME: "/Users/#{@user}" }
+        execute = Chef::Resource::Execute.new("Run action '#{action}' on service for agent '#{@agent_name}'", Chef.run_context)
+        execute.cwd(@install_dir)
+        execute.command("./svc.sh #{action}")
+        if osx?
+          execute.user(@user)
+          execute.group(@group)
+          execute.environment(envvars.to_s)
         end
+        execute.run_action(:run)
       end
     end
   end

@@ -1,21 +1,18 @@
 require 'rspec/core/rake_task'
 require 'rubocop/rake_task'
+require 'cookstyle'
 require 'foodcritic'
 require 'kitchen'
 
 namespace :style do
-  desc 'Run Ruby style checks'
-  RuboCop::RakeTask.new(:ruby)
+  desc 'Run cookstyle checks'
+  RuboCop::RakeTask.new(:ruby) do |task|
+    task.options << '--display-cop-names'
+  end
 
-  desc 'Run Chef style checks'
+  desc 'Run foodcritic checks'
   FoodCritic::Rake::LintTask.new(:chef)
 end
-
-desc 'Run all style checks'
-task style: ['style:chef', 'style:ruby']
-
-desc 'Run ChefSpec'
-RSpec::Core::RakeTask.new(:spec)
 
 namespace :kitchen do
   desc 'Run Test Kitchen with Vagrant'
@@ -24,6 +21,12 @@ namespace :kitchen do
     Kitchen::Config.new.instances.get('xplat-basic-ubuntu1404').test(:always)
   end
 end
+
+desc 'Run all style checks'
+task style: ['style:chef', 'style:ruby']
+
+desc 'Run ChefSpec'
+RSpec::Core::RakeTask.new(:spec)
 
 task :supermarket do
   exec 'chef exec knife supermarket share vsts_agent Other -o .. -k supermarket.pem -u vsts_agent_cookbook'
