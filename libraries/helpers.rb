@@ -65,12 +65,12 @@ module VSTS
       end
 
       def set_auth(args, resource)
-        args['auth'] = resource.vsts_auth
-        if resource.vsts_auth == 'PAT'
+        args['auth'] = resource.vsts_auth.downcase
+        if args['auth'] == 'pat'
           args['token'] = resource.vsts_token
-        elsif (resource.vsts_auth == 'Negotiate') || (resource.vsts_auth == 'ALT')
-          args['--username'] = resource.vsts_username
-          args['--password'] = resource.vsts_password
+        elsif (args['auth'] == 'negotiate') || (args['auth'] == 'alt')
+          args['username'] = resource.vsts_username
+          args['password'] = resource.vsts_password
         end
       end
 

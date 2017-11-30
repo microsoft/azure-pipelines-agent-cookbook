@@ -78,7 +78,7 @@ module VSTS
         if osx?
           execute.user(@user)
           execute.group(@group)
-          execute.environment(envvars.to_s)
+          execute.environment(envvars)
         end
         execute.run_action(:run)
       end

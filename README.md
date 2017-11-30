@@ -53,7 +53,11 @@ This resource installs and configures the vsts build and release agent
 - `windowslogonpassword`: Set password for windowslogonaccount unless it is equal to NetworkService or LocalService
 - `vsts_url`: url to VSTS instance
 - `vsts_pool`: A pool to connect an agent
-- `vsts_auth`:  Authentication type. Valid options are PAT (Personal Access Token), Negotiate (Kerberos or NTLM), Integrated (Windows default credentials) and ALT (Alternate Credentials). Default PAT auth
+- `vsts_auth`: Authentication type. Default PAT auth. Valid options are:
+  * PAT - Personal Access Token (requires vsts_token),
+  * Negotiate - Kerberos or NTLM (requires vsts_username and vsts_password),
+  * ALT - Alternate Credentials (requires vsts_username and vsts_password),
+  * Integrated - Windows default credentials (doesn't require any credentials).
 - `vsts_token`: A personal access token for VSTS. Used with PAT auth type. [See](http://roadtoalm.com/2015/07/22/using-personal-access-tokens-to-access-visual-studio-online/)
 - `vsts_username`: A user to connect to VSTS. Used with Negotiate and ALT auth
 - `vsts_password`: A user to connect to VSTS. Used with Negotiate and ALT auth
