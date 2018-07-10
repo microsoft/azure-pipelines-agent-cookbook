@@ -15,4 +15,4 @@ end
 
 depends 'windows'
 depends 'ark'
-depends 'seven_zip', '~> 2.0.0'
+depends 'seven_zip', '>= 2.0.0'
