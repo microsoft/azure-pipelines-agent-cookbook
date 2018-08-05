@@ -36,6 +36,12 @@ platforms:
       box: ubuntu/artful64
     provisioner:
       require_chef_omnibus: 13.6.4
+  
+  - name: ubuntu1804
+    driver_config:
+      box: ubuntu/bionic64
+    provisioner:
+      require_chef_omnibus: 14.3.37
 
   - name: centos7
     driver_config:
@@ -97,6 +103,7 @@ suites:
       - debian9
       - ubuntu1604
       - ubuntu1710
+      - ubuntu1804
       - centos7
 
     attributes:

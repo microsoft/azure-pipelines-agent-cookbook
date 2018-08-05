@@ -7,7 +7,7 @@ module VSTS
       require 'json'
       require 'fileutils'
 
-      def archive_name(version)
+      def get_archive_name(version)
         name = 'vsts_agent'
         name += '_' + version if version
         name
