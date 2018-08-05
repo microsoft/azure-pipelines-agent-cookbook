@@ -86,13 +86,12 @@ vsts_agent agent2_name do
   action :restart
 end
 
-
 # Agent 3 deployment group
 vsts_agent agent3_name do
   deploymentGroup true
   deploymentGroupName node['vsts_agent_test']['deployment_group_name']
   projectName node['vsts_agent_test']['deployment_group_project']
-  deploymentGroupTags "web, db"
+  deploymentGroupTags 'web, db'
   install_dir "#{agents_dir}/#{agent3_name}"
   user 'builder'
   group 'builder'
