@@ -57,7 +57,7 @@ action :install do
 
   converge_if_changed do
     archive_url = download_url(version)
-    archive_name = archive_name(version)
+    archive_name = get_archive_name(version)
     unpack_dir = ::File.join(Chef::Config[:file_cache_path], 'unpack_agent')
     unpack_dir = win_friendly_path(unpack_dir) if windows?
 
