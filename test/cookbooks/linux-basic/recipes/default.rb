@@ -23,6 +23,7 @@ include_recipe 'vsts_agent::default'
 
 agent1_name = "#{node['hostname']}_01"
 agent2_name = "#{node['hostname']}_02"
+agent3_name = "#{node['hostname']}_deployment_03"
 
 agents_dir = '/opt/agents'
 
@@ -33,6 +34,11 @@ vsts_agent agent1_name do
 end
 
 vsts_agent agent2_name do
+  vsts_token node['vsts_agent_test']['vsts_token']
+  action :remove
+end
+
+vsts_agent agent3_name do
   vsts_token node['vsts_agent_test']['vsts_token']
   action :remove
 end
@@ -77,5 +83,26 @@ vsts_agent agent2_name do
 end
 
 vsts_agent agent2_name do
+  action :restart
+end
+
+# Agent 3 deployment group
+vsts_agent agent3_name do
+  deploymentGroup true
+  deploymentGroupName node['vsts_agent_test']['deployment_group_name']
+  projectName node['vsts_agent_test']['deployment_group_project']
+  deploymentGroupTags 'web, db'
+  install_dir "#{agents_dir}/#{agent3_name}"
+  user 'builder'
+  group 'builder'
+  path '/usr/local/bin/:/usr/bin:/opt/bin/:/tmp/'
+  env('M2_HOME' => '/opt/maven', 'JAVA_HOME' => '/opt/java')
+  vsts_url node['vsts_agent_test']['vsts_url']
+  vsts_token node['vsts_agent_test']['vsts_token']
+  work_folder '/tmp/work'
+  action :install
+end
+
+vsts_agent agent3_name do
   action :restart
 end

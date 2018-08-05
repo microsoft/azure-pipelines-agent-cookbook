@@ -15,6 +15,7 @@ include_recipe 'vsts_agent::default'
 
 agent1_name = "win_#{node['hostname']}_01"
 agent2_name = "win_#{node['hostname']}_02"
+agent3_name = "win_#{node['hostname']}_deployment_03"
 
 agents_dir = 'C:\\agents'
 
@@ -29,6 +30,11 @@ vsts_agent agent1_name do
 end
 
 vsts_agent agent2_name do
+  vsts_token node['vsts_agent_test']['vsts_token']
+  action :remove
+end
+
+vsts_agent agent3_name do
   vsts_token node['vsts_agent_test']['vsts_token']
   action :remove
 end
@@ -68,5 +74,24 @@ vsts_agent agent2_name do
 end
 
 vsts_agent agent2_name do
+  action :restart
+end
+
+# Agent3
+vsts_agent agent3_name do
+  deploymentGroup true
+  deploymentGroupName node['vsts_agent_test']['deployment_group_name']
+  projectName node['vsts_agent_test']['deployment_group_project']
+  deploymentGroupTags 'web, db'
+  install_dir "#{agents_dir}\\#{agent2_name}"
+  user 'builder'
+  vsts_url node['vsts_agent_test']['vsts_url']
+  vsts_pool node['vsts_agent_test']['vsts_pool']
+  vsts_token node['vsts_agent_test']['vsts_token']
+  windowslogonaccount 'NT AUTHORITY\\NetworkService'
+  action :install
+end
+
+vsts_agent agent3_name do
   action :restart
 end
