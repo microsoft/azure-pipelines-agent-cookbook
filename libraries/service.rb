@@ -1,7 +1,6 @@
 require 'chef/resource/lwrp_base'
 require 'chef/provider/lwrp_base'
 require 'chef/mixin/shell_out'
-require 'chef/mixin/language'
 
 module VSTS
   module Agent
