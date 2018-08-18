@@ -27,7 +27,7 @@ property :vsts_username, String, desired_state: false
 property :vsts_password, String, sensitive: true, desired_state: false
 property :vsts_token, String, sensitive: true, desired_state: false
 
-include ::VSTS::Agent::Helpers
+include VSTS::Agent::Helpers
 
 load_current_value do
   state = load_state(agent_name)
@@ -57,7 +57,7 @@ action :install do
 
   converge_if_changed do
     archive_url = download_url(version)
-    archive_name = archive_name(version)
+    archive_name = archive_file_name(version)
     unpack_dir = ::File.join(Chef::Config[:file_cache_path], 'unpack_agent')
     unpack_dir = win_friendly_path(unpack_dir) if windows?
 
