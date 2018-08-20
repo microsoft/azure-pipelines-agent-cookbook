@@ -7,6 +7,12 @@ module VSTS
       require 'json'
       require 'fileutils'
 
+      # returns windows friendly version of the provided path,
+      # ensures backslashes are used everywhere
+      def win_path(path)
+        path.gsub(::File::SEPARATOR, ::File::ALT_SEPARATOR || '\\') if path
+      end
+
       def archive_file_name(version)
         name = 'vsts_agent'
         name += '_' + version if version
