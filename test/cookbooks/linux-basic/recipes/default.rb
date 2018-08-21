@@ -1,9 +1,6 @@
 #### Begin prepare system ####
 include_recipe 'apt::default' if platform_family?('debian')
-
-build_essential 'build-essential' do
-  compile_time false
-end
+include_recipe 'build-essential::default'
 
 user node['vsts_agent_test']['username'].to_s do
   manage_home true
