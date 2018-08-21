@@ -30,6 +30,8 @@ set VSTS_URL='https://account.visualstudio.com'
 set VSTS_POOL=default
 set VSTS_USER=username
 set VSTS_TOKEN=my_secret_token_from_vsts
+set VSTS_DEPLOYMENT_GROUP_NAME=test-chef-deployment
+set VSTS_DEPLOYMENT_GROUP_PROJECT=test
 ```
 Linux / Mac:
 ```
@@ -37,6 +39,8 @@ export VSTS_URL='https://account.visualstudio.com'
 export VSTS_POOL=default
 export VSTS_USER=username
 export VSTS_TOKEN=my_secret_token_from_vsts
+export VSTS_DEPLOYMENT_GROUP_NAME=test-chef-deployment
+export VSTS_DEPLOYMENT_GROUP_PROJECT=test
 ```
 
 If the username of the box you're testing differs from standard "vagrant":

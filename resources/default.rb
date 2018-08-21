@@ -27,7 +27,14 @@ property :vsts_username, String, desired_state: false
 property :vsts_password, String, sensitive: true, desired_state: false
 property :vsts_token, String, sensitive: true, desired_state: false
 
-include VSTS::Agent::Helpers
+# Deployment Groups
+property :deploymentGroup, [TrueClass, FalseClass], default: false
+property :deploymentGroupName, String
+property :deploymentGroupTags, String, desired_state: false
+property :projectName, String
+property :collectionName, String, default: 'DefaultCollection'
+
+include ::VSTS::Agent::Helpers
 
 load_current_value do
   state = load_state(agent_name)
@@ -40,6 +47,10 @@ load_current_value do
   vsts_url state['vsts_url']
   vsts_pool state['vsts_pool']
   work_folder state['work_folder']
+  deploymentGroup state['deploymentGroup']
+  deploymentGroupName state['deploymentGroupName']
+  projectName state['projectName']
+  collectionName state['collectionName']
 
   runasservice service_exist?(install_dir)
 end
@@ -57,7 +68,7 @@ action :install do
 
   converge_if_changed do
     archive_url = download_url(version)
-    archive_name = archive_file_name(version)
+    archive_name = get_archive_name(version)
     unpack_dir = ::File.join(Chef::Config[:file_cache_path], 'unpack_agent')
     unpack_dir = win_path(unpack_dir) if windows?
 
@@ -97,10 +108,21 @@ action :install do
       unattended: nil,
       replace: nil,
       url: new_resource.vsts_url,
-      pool: new_resource.vsts_pool,
       agent: new_resource.agent_name,
       work: new_resource.work_folder,
     }
+
+    if new_resource.deploymentGroup
+      args[:deploymentGroup] = nil
+      args[:deploymentGroupName] = new_resource.deploymentGroupName || new_resource.vsts_pool
+      args[:projectName] = new_resource.projectName
+      args[:collectionName] = new_resource.collectionName if new_resource.collectionName
+
+      args[:addDeploymentGroupTags] = nil if new_resource.deploymentGroupTags
+      args[:deploymentGroupTags] = new_resource.deploymentGroupTags if new_resource.deploymentGroupTags
+    else
+      args[:pool] = new_resource.vsts_pool
+    end
 
     if new_resource.runasservice
       args[:runasservice] = nil
@@ -149,7 +171,11 @@ action :install do
                                             group: new_resource.group,
                                             vsts_url: new_resource.vsts_url,
                                             vsts_pool: new_resource.vsts_pool,
-                                            work_folder: new_resource.work_folder)
+                                            work_folder: new_resource.work_folder,
+                                            deploymentGroup: new_resource.deploymentGroup,
+                                            deploymentGroupName: new_resource.deploymentGroupName,
+                                            projectName: new_resource.projectName,
+                                            collectionName: new_resource.collectionName)
         Chef::Log.info "'#{new_resource.agent_name}' agent was installed"
       end
       action :run

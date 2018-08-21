@@ -36,6 +36,12 @@ platforms:
       box: ubuntu/artful64
     provisioner:
       require_chef_omnibus: 13.6.4
+  
+  - name: ubuntu1804
+    driver_config:
+      box: ubuntu/bionic64
+    provisioner:
+      require_chef_omnibus: 14.3.37
 
   - name: centos7
     driver_config:
@@ -88,6 +94,8 @@ suites:
             vsts_url: <%= ENV['VSTS_URL'] %>
             vsts_pool: <%= ENV['VSTS_POOL'] %>
             vsts_token: <%= ENV['VSTS_TOKEN'] %>
+            deployment_group_name: <%= ENV['VSTS_DEPLOYMENT_GROUP_NAME'] %>
+            deployment_group_project: <%= ENV['VSTS_DEPLOYMENT_GROUP_PROJECT'] %>
 
   - name: linux-basic
     run_list:
@@ -97,6 +105,7 @@ suites:
       - debian9
       - ubuntu1604
       - ubuntu1710
+      - ubuntu1804
       - centos7
 
     attributes:
@@ -105,6 +114,8 @@ suites:
             vsts_url: <%= ENV['VSTS_URL'] %>
             vsts_pool: <%= ENV['VSTS_POOL'] %>
             vsts_token: <%= ENV['VSTS_TOKEN'] %>
+            deployment_group_name: <%= ENV['VSTS_DEPLOYMENT_GROUP_NAME'] %>
+            deployment_group_project: <%= ENV['VSTS_DEPLOYMENT_GROUP_PROJECT'] %>
 
   - name: osx-basic
     run_list:

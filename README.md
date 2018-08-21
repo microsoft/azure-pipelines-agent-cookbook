@@ -41,14 +41,19 @@ This resource installs and configures the vsts build and release agent
 - `:restart`: Restart the agent service
 
 #### Parameters
-- `agent_name`: Name attribute. The name of the vsts agent
+- `agent_name`: name attribute. The name of the vsts agent
+- `deploymentGroup`: deploy the agent into the [deployment group](https://docs.microsoft.com/en-us/vsts/pipelines/release/deployment-groups/?view=vsts). Default '`false`'
+  * `deploymentGroupName`: name of the deployment group. Only applies if `deploymentGroup==true`
+  * `projectName`: name of the vsts/tfs project where to deploy the agent. Only applies if `deploymentGroup==true`
+  * `collectionName`: name of the vsts/tfs collection where to deploy the agent. Only applies if `deploymentGroup==true`. Dafault value is `DefaultCollection`
+  * `deploymentGroupTags`: a comma-separated list of tags to set for the agent. Only applies if `deploymentGroup==true`
 - `version`: an agent version to install. Default version from an attribute
 - `install_dir`: A target directory to install the vsts agent
 - `path`: Overwrite system PATH environment variable values. Linux and macOS only
 - `env`: Additional environment variables. Linux and macOS only
 - `user`: Set a local user to run the vsts agent
 - `group`: Set a local group to run the vsts agent
-- `runasservice`: run agent as a service. Default 'true'
+- `runasservice`: run agent as a service. Default '`true`'
 - `windowslogonaccount`: Set a user name to run a windows service. Possible values are "NT AUTHORITY\NetworkService", "NT AUTHORITY\LocalService" or any system valid username
 - `windowslogonpassword`: Set password for windowslogonaccount unless it is equal to NetworkService or LocalService
 - `vsts_url`: url to VSTS instance
@@ -64,7 +69,7 @@ This resource installs and configures the vsts build and release agent
 - `work_folder`: Set different workspace location. Default is "install_dir/\_work"
 
 #### Examples
-Install, configure, restart and remove an agent.
+Install, configure, restart and remove a build agent.
 Check [windows](test/cookbooks/windows-basic/recipes/default.rb), [linux](test/cookbooks/linux-basic/recipes/default.rb) or [osx](test/cookbooks/osx-basic/recipes/default.rb) tests for more examples.
 
 ```ruby
@@ -98,6 +103,29 @@ vsts_agent 'agent_01' do
   vsts_token 'my_secret_token_from_vsts'
   action :remove
 end
+```
+
+Install, configure, restart and remove a deployment agent.
+
+```ruby
+vsts_agent 'deployment_agent_01' do
+  install_dir dir
+  deploymentGroup true
+  deploymentGroupName 'project1-deployment-group'
+  projectName 'project1'
+  collectionName 'DefaultCollection'
+  deploymentGroupTags "web, db"
+  user 'vagrant'
+  group 'vagrant'
+  path '/usr/local/bin/:/usr/bin:/opt/bin/' # only works on nix systems
+  env('M2_HOME' => '/opt/maven', 'JAVA_HOME' => '/opt/java') # only works on nix systems
+  vsts_url 'https://contoso.visualstudio.com'
+  vsts_token 'my_secret_token_from_vsts'
+  windowslogonaccount 'builder' # will be used only on windows
+  windowslogonpassword 'Pas$w0r_d' # will be used only on windows
+  action :install
+end
+
 ```
 
 # How to contribute
