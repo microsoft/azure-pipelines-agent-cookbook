@@ -49,6 +49,12 @@ platforms:
     provisioner:
       require_chef_omnibus: 12.20.3
 
+  - name: windows-2016
+    driver:
+      box: StefanScherer/windows_2016
+      communicator: 'winrm'
+      gui: true
+
 # The following platforms are private boxes and are not available from the vagrant box repository
 # Follow instructions provided in TESTING.md to create a box
 
@@ -88,6 +94,7 @@ suites:
     includes:
       - windows10
       - windows-2012-r2
+      - windows-2016
     attributes:
         vsts_agent_test:
             username: <%= ENV['BOX_USERNAME'] %>
