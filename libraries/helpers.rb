@@ -13,6 +13,12 @@ module VSTS
         name
       end
 
+      # returns windows friendly version of the provided path,
+      # ensures backslashes are used everywhere
+      def get_win_friendly_path(path)
+        path.gsub(::File::SEPARATOR, ::File::ALT_SEPARATOR || '\\') if path
+      end
+
       def download_url(version)
         url = Chef.run_context.node['vsts_agent']['binary']['url']
         url.gsub '%s', version

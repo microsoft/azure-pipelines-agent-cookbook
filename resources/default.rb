@@ -70,7 +70,7 @@ action :install do
     archive_url = download_url(version)
     archive_name = get_archive_name(version)
     unpack_dir = ::File.join(Chef::Config[:file_cache_path], 'unpack_agent')
-    unpack_dir = win_path(unpack_dir) if windows?
+    unpack_dir = get_win_friendly_path(unpack_dir) if windows?
 
     remove_agent(new_resource)
 
@@ -99,7 +99,7 @@ action :install do
 
     execute "Move #{new_resource.agent_name} agent from intermidiate folder" do
       command "cp -r #{unpack_dir}/#{archive_name}/* #{new_resource.install_dir}" unless windows?
-      command "xcopy #{unpack_dir}\\#{archive_name}\\* #{win_path(new_resource.install_dir)} /s /e /q" if windows?
+      command "xcopy #{unpack_dir}\\#{archive_name}\\* #{get_win_friendly_path(new_resource.install_dir)} /s /e /q" if windows?
       action :run
     end
 
