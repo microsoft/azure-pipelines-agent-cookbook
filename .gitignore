@@ -10,3 +10,7 @@ bin
 .coverage
 .kitchen/
 .idea/
+solo-cookbooks/
+chef_guid
+nodes/
+cache/

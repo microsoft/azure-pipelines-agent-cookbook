@@ -22,6 +22,23 @@ namespace :kitchen do
   end
 end
 
+namespace :solo do
+  desc 'Use chef-solo to bootstrap current node'
+  task :install do
+    exec 'berks installl'
+  end
+  
+  task :vendor do
+    exec 'berks vendor solo-cookbooks'
+  end
+
+  task :windows do
+    Rake::Task['solo:install']
+    Rake::Task['solo:vendor']
+    exec 'chef-solo -c test\solo.rb -j test\cookbooks\windows-basic\solo.json'
+  end
+end
+
 desc 'Run all style checks'
 task style: ['style:chef', 'style:ruby']
 
