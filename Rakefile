@@ -27,7 +27,7 @@ namespace :solo do
   task :install do
     exec 'berks installl'
   end
-  
+
   task :vendor do
     exec 'berks vendor solo-cookbooks'
   end
