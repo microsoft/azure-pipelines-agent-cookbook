@@ -238,6 +238,7 @@ action :restart do
 end
 
 action_class do
+  include Windows::Helper
   require 'json'
 
   # rubocop:disable all

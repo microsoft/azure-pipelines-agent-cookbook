@@ -9,6 +9,8 @@ end
 grant_logon_as_service node['vsts_agent_test']['username']
 grant_logon_as_service 'builder'
 
+include_recipe 'seven_zip::default'
+
 #### End prepare system ####
 
 include_recipe 'vsts_agent::default'
