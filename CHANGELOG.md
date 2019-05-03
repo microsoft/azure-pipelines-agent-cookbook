@@ -75,3 +75,9 @@
 - Add missing installation of **7zip**.
 - Copy `win_friendly_path` method to helpers library.
 - Add Windows Server 2016 to kitchen.yml
+
+## [v3.0.0](https://github.com/Microsoft/azure-pipelines-agent-cookbook/tree/v3.0.0) - (2018-08-05)
+
+### Added
+
+- Add deployment groups support. Closed #27
