@@ -1,0 +1,64 @@
+name: $(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+      - develop
+      - feature/*
+      - release/*
+      - hotfix/*
+  paths:
+    exclude:
+      - LICENSE
+      - README.md
+      - CHANGELOG.md
+      - TESTING.md
+      - CONTRIBUTING.md
+      - .foodcritic
+      - .rspec
+      - .rubocop.yml
+      - .gitignore
+      - chefignore
+
+pr:
+  branches:
+    include:
+      - master
+      - develop
+      - release/*
+  paths:
+    exclude:
+      - LICENSE
+      - README.md
+      - CHANGELOG.md
+      - TESTING.md
+      - CONTRIBUTING.md
+      - .foodcritic
+      - .rspec
+      - .rubocop.yml
+      - .gitignore
+      - chefignore
+
+resources:
+  repositories:
+    - repository: templates
+      type: git
+      name: chef-pipelines-templates
+
+jobs:
+  - template: common.yml@templates
+    parameters:
+      kitchenFile: kitchen.yml
+      platforms:
+        - mojave
+        - debian8
+        - debian9
+        - ubuntu1604
+        - ubuntu1710
+        - ubuntu1804
+        - centos7
+      suites:
+        - linux-basic
+        - macos-basic
