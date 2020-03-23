@@ -30,7 +30,7 @@ property :vsts_token, String, sensitive: true, desired_state: false
 # Deployment Groups
 property :deploymentGroup, [TrueClass, FalseClass], default: false
 property :deploymentGroupName, String
-property :deploymentGroupTags, String, desired_state: false
+property :deploymentGroupTags, String
 property :projectName, String
 property :collectionName, String, default: 'DefaultCollection'
 
@@ -49,6 +49,7 @@ load_current_value do
   work_folder state['work_folder']
   deploymentGroup state['deploymentGroup']
   deploymentGroupName state['deploymentGroupName']
+  deploymentGroupTags state['deploymentGroupTags']
   projectName state['projectName']
   collectionName state['collectionName']
 
@@ -174,6 +175,7 @@ action :install do
                                             work_folder: new_resource.work_folder,
                                             deploymentGroup: new_resource.deploymentGroup,
                                             deploymentGroupName: new_resource.deploymentGroupName,
+                                            deploymentGroupTags: new_resource.deploymentGroupTags,
                                             projectName: new_resource.projectName,
                                             collectionName: new_resource.collectionName)
         Chef::Log.info "'#{new_resource.agent_name}' agent was installed"
