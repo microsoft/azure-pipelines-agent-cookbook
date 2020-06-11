@@ -19,6 +19,10 @@ property :version, String, desired_state: false
 property :path, String, desired_state: false
 property :env, Hash, default: {}, desired_state: false
 
+# Proxy
+property :proxy_url, String
+property :proxy_sslcacert, String
+
 # VSTS Access
 property :vsts_url, String, regex: %r{^https?://.*$}
 property :vsts_pool, String
@@ -52,6 +56,8 @@ load_current_value do
   deploymentGroupTags state['deploymentGroupTags']
   projectName state['projectName']
   collectionName state['collectionName']
+  proxy_url state['proxy_url']
+  proxy_sslcacert state['proxy_sslcacert']
 
   runasservice service_exist?(install_dir)
 end
@@ -133,6 +139,14 @@ action :install do
       end
     end
 
+    if new_resource.proxy_url
+      args[:proxyurl] = new_resource.proxy_url
+    end
+
+    if new_resource.proxy_sslcacert
+      args[:sslcacert] = new_resource.proxy_sslcacert
+    end
+
     set_auth(args, new_resource)
 
     execute "Configuring agent '#{new_resource.agent_name}'" do
@@ -177,7 +191,9 @@ action :install do
                                             deploymentGroupName: new_resource.deploymentGroupName,
                                             deploymentGroupTags: new_resource.deploymentGroupTags,
                                             projectName: new_resource.projectName,
-                                            collectionName: new_resource.collectionName)
+                                            collectionName: new_resource.collectionName,
+                                            proxy_url: new_resource.proxy_url,
+                                            proxy_sslcacert: new_resource.proxy_sslcacert)
         Chef::Log.info "'#{new_resource.agent_name}' agent was installed"
       end
       action :run
