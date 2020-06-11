@@ -139,13 +139,8 @@ action :install do
       end
     end
 
-    if new_resource.proxy_url
-      args[:proxyurl] = new_resource.proxy_url
-    end
-
-    if new_resource.proxy_sslcacert
-      args[:sslcacert] = new_resource.proxy_sslcacert
-    end
+    args[:proxyurl] = new_resource.proxy_url || nil
+    args[:sslcacert] = new_resource.proxy_sslcacert || nil
 
     set_auth(args, new_resource)
 
