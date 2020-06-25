@@ -31,7 +31,7 @@ module VSTS
       end
 
       def osx?
-        platform_family?('mac_os_x') || platform_family?('mac_os_x_server')
+        platform_family?('mac_os_x')
       end
 
       def service_exist?(install_dir)
