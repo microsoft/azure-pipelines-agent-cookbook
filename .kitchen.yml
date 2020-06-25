@@ -1,16 +1,14 @@
 ---
 driver:
   name: vagrant
-  gui: true
-  customize:
-    cpus: 2
-    memory: 1024
 
 provisioner:
   name: chef_zero
-  log_level: auto
+  product_name: chef
+  chef_license: accept
+  channel: stable
   client_rb:
-      add_formatter: doc
+    add_formatter: doc
 
 platforms:
   - name: debian8
@@ -18,7 +16,7 @@ platforms:
       box: debian/jessie64
     provisioner:
       require_chef_omnibus: 12.20.3
-  
+
   - name: debian9
     driver_config:
       box: debian/stretch64
@@ -30,13 +28,13 @@ platforms:
       box: ubuntu/xenial64
     provisioner:
       require_chef_omnibus: 13.6.4
-    
+
   - name: ubuntu1710
     driver_config:
       box: ubuntu/artful64
     provisioner:
       require_chef_omnibus: 13.6.4
-  
+
   - name: ubuntu1804
     driver_config:
       box: ubuntu/bionic64
@@ -52,17 +50,17 @@ platforms:
   - name: windows-2016
     driver:
       box: StefanScherer/windows_2016
-      communicator: 'winrm'
+      communicator: "winrm"
       gui: true
 
-# The following platforms are private boxes and are not available from the vagrant box repository
-# Follow instructions provided in TESTING.md to create a box
+  # The following platforms are private boxes and are not available from the vagrant box repository
+  # Follow instructions provided in TESTING.md to create a box
 
-# To a use a private box:
-# 1. Create a box. To do so, follow the instructions in TESTING.md
-# 2. Once you've added the vagrant box, modify this file to use it
-# 3. In the 'suites' section of this file, list your box name(s) under 'includes' for the corresponding platform
-# 4. Confirm your box shows up when running `vagrant box list` and `kitchen list` when in this cookbook directory
+  # To a use a private box:
+  # 1. Create a box. To do so, follow the instructions in TESTING.md
+  # 2. Once you've added the vagrant box, modify this file to use it
+  # 3. In the 'suites' section of this file, list your box name(s) under 'includes' for the corresponding platform
+  # 4. Confirm your box shows up when running `vagrant box list` and `kitchen list` when in this cookbook directory
 
   - name: osx1012
     driver:
@@ -74,7 +72,7 @@ platforms:
   - name: windows10
     driver_config:
       guest: windows
-      communicator: 'winrm'
+      communicator: "winrm"
       box: win10x64-enterprise
     provisioner:
       require_chef_omnibus: 13.6.4
@@ -82,7 +80,7 @@ platforms:
   - name: windows-2012-r2
     driver_config:
       guest: windows
-      communicator: 'winrm'
+      communicator: "winrm"
       box: windows-2012-r2
     provisioner:
       require_chef_omnibus: 13.0.118
@@ -96,13 +94,13 @@ suites:
       - windows-2012-r2
       - windows-2016
     attributes:
-        vsts_agent_test:
-            username: <%= ENV['BOX_USERNAME'] %>
-            vsts_url: <%= ENV['VSTS_URL'] %>
-            vsts_pool: <%= ENV['VSTS_POOL'] %>
-            vsts_token: <%= ENV['VSTS_TOKEN'] %>
-            deployment_group_name: <%= ENV['VSTS_DEPLOYMENT_GROUP_NAME'] %>
-            deployment_group_project: <%= ENV['VSTS_DEPLOYMENT_GROUP_PROJECT'] %>
+      vsts_agent_test:
+        username: <%= ENV['BOX_USERNAME'] %>
+        vsts_url: <%= ENV['VSTS_URL'] %>
+        vsts_pool: <%= ENV['VSTS_POOL'] %>
+        vsts_token: <%= ENV['VSTS_TOKEN'] %>
+        deployment_group_name: <%= ENV['VSTS_DEPLOYMENT_GROUP_NAME'] %>
+        deployment_group_project: <%= ENV['VSTS_DEPLOYMENT_GROUP_PROJECT'] %>
 
   - name: linux-basic
     run_list:
@@ -116,13 +114,13 @@ suites:
       - centos7
 
     attributes:
-        vsts_agent_test:
-            username: <%= ENV['BOX_USERNAME'] %>
-            vsts_url: <%= ENV['VSTS_URL'] %>
-            vsts_pool: <%= ENV['VSTS_POOL'] %>
-            vsts_token: <%= ENV['VSTS_TOKEN'] %>
-            deployment_group_name: <%= ENV['VSTS_DEPLOYMENT_GROUP_NAME'] %>
-            deployment_group_project: <%= ENV['VSTS_DEPLOYMENT_GROUP_PROJECT'] %>
+      vsts_agent_test:
+        username: <%= ENV['BOX_USERNAME'] %>
+        vsts_url: <%= ENV['VSTS_URL'] %>
+        vsts_pool: <%= ENV['VSTS_POOL'] %>
+        vsts_token: <%= ENV['VSTS_TOKEN'] %>
+        deployment_group_name: <%= ENV['VSTS_DEPLOYMENT_GROUP_NAME'] %>
+        deployment_group_project: <%= ENV['VSTS_DEPLOYMENT_GROUP_PROJECT'] %>
 
   - name: osx-basic
     run_list:
@@ -131,9 +129,8 @@ suites:
       - osx1012
 
     attributes:
-        vsts_agent_test:
-            username: <%= ENV['BOX_USERNAME'] %>
-            vsts_url: <%= ENV['VSTS_URL'] %>
-            vsts_pool: <%= ENV['VSTS_POOL'] %>
-            vsts_token: <%= ENV['VSTS_TOKEN'] %>
-
+      vsts_agent_test:
+        username: <%= ENV['BOX_USERNAME'] %>
+        vsts_url: <%= ENV['VSTS_URL'] %>
+        vsts_pool: <%= ENV['VSTS_POOL'] %>
+        vsts_token: <%= ENV['VSTS_TOKEN'] %>
