@@ -1,10 +1,10 @@
 name             'vsts_agent'
 maintainer       'Microsoft'
-maintainer_email 'dmivanov@microsoft.com'
+maintainer_email 'eahanl@microsoft.com'
 license          'MIT'
 description      'Installs/Configures visualstudio team services build agents'
-source_url       'https://github.com/Microsoft/vsts-agent-cookbook'
-issues_url       'https://github.com/Microsoft/vsts-agent-cookbook/issues'
+source_url       'https://github.com/Microsoft/azure-pipelines-agent-cookbook'
+issues_url       'https://github.com/Microsoft/azure-pipelines-agent-cookbook/issues'
 chef_version     '>= 12.4'
 version          '3.1.0'
 
