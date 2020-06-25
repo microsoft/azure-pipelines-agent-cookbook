@@ -1,4 +1,4 @@
-resource_name :vsts_agent
+provides :vsts_agent
 
 default_action :install
 
@@ -10,7 +10,7 @@ property :group, String, desired_state: false
 
 property :work_folder, String, default: '_work'
 
-property :runasservice, [TrueClass, FalseClass], default: true
+property :runasservice, [true, false], default: true
 property :windowslogonaccount, String, desired_state: false
 property :windowslogonpassword, String, desired_state: false
 
@@ -32,7 +32,7 @@ property :vsts_password, String, sensitive: true, desired_state: false
 property :vsts_token, String, sensitive: true, desired_state: false
 
 # Deployment Groups
-property :deploymentGroup, [TrueClass, FalseClass], default: false
+property :deploymentGroup, [true, false], default: false
 property :deploymentGroupName, String
 property :deploymentGroupTags, String
 property :projectName, String
@@ -221,7 +221,7 @@ action :install do
 end
 
 action :remove do
-  if current_resource && current_resource.install_dir # ~FC023
+  if current_resource && current_resource.install_dir
     converge_by("Removing agent '#{current_resource.agent_name}'") do
       remove_agent(current_resource)
       ruby_block "remove state for agent '#{current_resource.agent_name}'" do
@@ -236,7 +236,7 @@ action :remove do
 end
 
 action :restart do
-  if current_resource && current_resource.install_dir && current_resource.runasservice # ~FC023
+  if current_resource && current_resource.install_dir && current_resource.runasservice
     converge_by("Restarting agent '#{current_resource.agent_name}'") do
       ruby_block "Restart vsts_agent #{current_resource.agent_name} service" do
         block do

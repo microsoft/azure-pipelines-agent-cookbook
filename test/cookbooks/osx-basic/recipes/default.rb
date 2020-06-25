@@ -1,5 +1,5 @@
 #### Begin prepare system ####
-include_recipe 'build-essential::default'
+build_essential 'install compilation tools'
 #### End prepare system ####
 
 include_recipe 'vsts_agent::default'

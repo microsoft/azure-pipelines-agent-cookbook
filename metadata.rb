@@ -3,10 +3,9 @@ maintainer       'Microsoft'
 maintainer_email 'dmivanov@microsoft.com'
 license          'MIT'
 description      'Installs/Configures visualstudio team services build agents'
-long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-source_url       'https://github.com/Microsoft/vsts-agent-cookbook' if respond_to?(:source_url)
-issues_url       'https://github.com/Microsoft/vsts-agent-cookbook/issues' if respond_to?(:issues_url)
-chef_version     '>= 12.4' if respond_to?(:chef_version)
+source_url       'https://github.com/Microsoft/vsts-agent-cookbook'
+issues_url       'https://github.com/Microsoft/vsts-agent-cookbook/issues'
+chef_version     '>= 12.4'
 version          '3.1.0'
 
 %w(ubuntu debian redhat centos mac_os_x windows).each do |operating_system|
