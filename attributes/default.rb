@@ -5,7 +5,7 @@ when 'windows'
   default['vsts_agent']['binary']['url'] = 'https://vstsagentpackage.azureedge.net/agent/%s/vsts-agent-win-x64-%s.zip'
 when 'debian', 'rhel'
   default['vsts_agent']['binary']['url'] = 'https://vstsagentpackage.azureedge.net/agent/%s/vsts-agent-linux-x64-%s.tar.gz'
-when 'mac_os_x', 'mac_os_x_server'
+when 'mac_os_x'
   default['vsts_agent']['binary']['url'] = 'https://vstsagentpackage.azureedge.net/agent/%s/vsts-agent-osx-x64-%s.tar.gz'
 end
 

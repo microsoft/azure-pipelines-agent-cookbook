@@ -1,0 +1,66 @@
+---
+driver:
+  name: azurerm
+  location: "westus2"
+  machine_size: "Standard_A4_v2"
+  explicit_resource_group_name: azure-pipelines-agent-cicd-rg
+  destroy_explicit_resource_group: true
+  destroy_resource_group_contents: true
+
+provisioner:
+  name: chef_zero
+  product_name: chef
+  product_version: 16
+  chef_license: accept
+  channel: stable
+
+transport:
+  ssh_key: ~/.ssh/id_kitchen-azurerm
+
+verifier:
+  name: inspec
+  sudo: true
+  reporter:
+    - cli
+    - junit:/tmp/%{suite}-%{platform}-inspec.xml
+  inspec_tests:
+    - test/integration/default
+
+platforms:
+  - name: debian-10
+    driver:
+      image_urn: Debian:debian-10:10:latest
+      vm_name: buster-pipelines-agent-vm
+
+  - name: ubuntu-18.04
+    driver:
+      image_urn: Canonical:UbuntuServer:18.04-LTS:latest
+      vm_name: bionic-pipelines-agent-vm
+
+  - name: ubuntu-20.04
+    driver:
+      image_urn: Canonical:UbuntuServer:20.04-LTS:latest
+      vm_name: focal-pipelines-agent-vm
+
+  - name: centos-7
+    driver_config:
+      image_urn: OpenLogic:CentOS:7.5:latest
+
+suites:
+  - name: linux-basic
+    run_list:
+      - recipe[linux-basic::default]
+    includes:
+      - debian-10
+      - ubuntu-18.04
+      - ubuntu-20.04
+      - centos-7
+
+    attributes:
+      vsts_agent_test:
+        username: <%= ENV['BOX_USERNAME'] %>
+        vsts_url: <%= ENV['VSTS_URL'] %>
+        vsts_pool: <%= ENV['VSTS_POOL'] %>
+        vsts_token: <%= ENV['VSTS_TOKEN'] %>
+        deployment_group_name: <%= ENV['VSTS_DEPLOYMENT_GROUP_NAME'] %>
+        deployment_group_project: <%= ENV['VSTS_DEPLOYMENT_GROUP_PROJECT'] %>

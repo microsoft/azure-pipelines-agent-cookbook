@@ -1,6 +1,5 @@
-#### Begin prepare system ####
-include_recipe 'apt::default' if platform_family?('debian')
-include_recipe 'build-essential::default'
+apt_update if platform_family?('debian')
+build_essential 'install compilation tools'
 
 user node['vsts_agent_test']['username'].to_s do
   manage_home true
@@ -16,8 +15,6 @@ user 'builder' do
   home '/home/builder'
   shell '/bin/bash'
 end
-
-#### End prepare system ####
 
 include_recipe 'vsts_agent::default'
 

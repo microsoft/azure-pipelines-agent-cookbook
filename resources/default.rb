@@ -1,4 +1,4 @@
-resource_name :vsts_agent
+provides :vsts_agent
 
 default_action :install
 
@@ -10,7 +10,7 @@ property :group, String, desired_state: false
 
 property :work_folder, String, default: '_work'
 
-property :runasservice, [TrueClass, FalseClass], default: true
+property :runasservice, [true, false], default: true
 property :windowslogonaccount, String, desired_state: false
 property :windowslogonpassword, String, desired_state: false
 
@@ -18,6 +18,10 @@ property :windowslogonpassword, String, desired_state: false
 property :version, String, desired_state: false
 property :path, String, desired_state: false
 property :env, Hash, default: {}, desired_state: false
+
+# Proxy
+property :proxy_url, String
+property :proxy_sslcacert, String
 
 # VSTS Access
 property :vsts_url, String, regex: %r{^https?://.*$}
@@ -28,7 +32,7 @@ property :vsts_password, String, sensitive: true, desired_state: false
 property :vsts_token, String, sensitive: true, desired_state: false
 
 # Deployment Groups
-property :deploymentGroup, [TrueClass, FalseClass], default: false
+property :deploymentGroup, [true, false], default: false
 property :deploymentGroupName, String
 property :deploymentGroupTags, String
 property :projectName, String
@@ -52,6 +56,8 @@ load_current_value do
   deploymentGroupTags state['deploymentGroupTags']
   projectName state['projectName']
   collectionName state['collectionName']
+  proxy_url state['proxy_url']
+  proxy_sslcacert state['proxy_sslcacert']
 
   runasservice service_exist?(install_dir)
 end
@@ -133,6 +139,9 @@ action :install do
       end
     end
 
+    args[:proxyurl] = new_resource.proxy_url || nil
+    args[:sslcacert] = new_resource.proxy_sslcacert || nil
+
     set_auth(args, new_resource)
 
     execute "Configuring agent '#{new_resource.agent_name}'" do
@@ -177,7 +186,9 @@ action :install do
                                             deploymentGroupName: new_resource.deploymentGroupName,
                                             deploymentGroupTags: new_resource.deploymentGroupTags,
                                             projectName: new_resource.projectName,
-                                            collectionName: new_resource.collectionName)
+                                            collectionName: new_resource.collectionName,
+                                            proxy_url: new_resource.proxy_url,
+                                            proxy_sslcacert: new_resource.proxy_sslcacert)
         Chef::Log.info "'#{new_resource.agent_name}' agent was installed"
       end
       action :run
@@ -210,7 +221,7 @@ action :install do
 end
 
 action :remove do
-  if current_resource && current_resource.install_dir # ~FC023
+  if current_resource && current_resource.install_dir
     converge_by("Removing agent '#{current_resource.agent_name}'") do
       remove_agent(current_resource)
       ruby_block "remove state for agent '#{current_resource.agent_name}'" do
@@ -225,7 +236,7 @@ action :remove do
 end
 
 action :restart do
-  if current_resource && current_resource.install_dir && current_resource.runasservice # ~FC023
+  if current_resource && current_resource.install_dir && current_resource.runasservice
     converge_by("Restarting agent '#{current_resource.agent_name}'") do
       ruby_block "Restart vsts_agent #{current_resource.agent_name} service" do
         block do

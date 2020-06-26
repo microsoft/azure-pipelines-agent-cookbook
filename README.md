@@ -18,6 +18,7 @@ The following platforms are tested and supported:
 - Debian 8 x64 (Jessie)
 - Debian 9 x64 (Stretch)
 - Ubuntu 16.04 (Xenial Xerus)
+- Ubuntu 18.04 (Bionic)
 - Ubuntu 17.10 (Artful Aardvark)
 - CentOS 7
 - Windows 10
@@ -67,6 +68,8 @@ This resource installs and configures the vsts build and release agent
 - `vsts_username`: A user to connect to VSTS. Used with Negotiate and ALT auth
 - `vsts_password`: A user to connect to VSTS. Used with Negotiate and ALT auth
 - `work_folder`: Set different workspace location. Default is "install_dir/\_work"
+- `proxy_url`: Set the forward proxy (example value: `http://192.168.1.1:8080`)
+- `proxy_sslcacert`: Set the root certificate which is used for communicating through the forward proxy (example value: `/usr/local/share/ca-certificates/Internal-CA.crt`)
 
 #### Examples
 Install, configure, restart and remove a build agent.
