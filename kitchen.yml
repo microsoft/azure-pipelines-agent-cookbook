@@ -51,10 +51,6 @@ platforms:
   #     box: StefanScherer/windows_2016
   #     communicator: "winrm"
   #     gui: true
-  # - name: osx1012
-  #   driver:
-  #     box: osx1012
-  #     username: <%= ENV['BOX_USERNAME'] %>
   # - name: windows10
   #   driver_config:
   #     guest: windows
@@ -100,14 +96,3 @@ suites:
         vsts_token: <%= ENV['VSTS_TOKEN'] %>
         deployment_group_name: <%= ENV['VSTS_DEPLOYMENT_GROUP_NAME'] %>
         deployment_group_project: <%= ENV['VSTS_DEPLOYMENT_GROUP_PROJECT'] %>
-  # - name: osx-basic
-  #   run_list:
-  #     - recipe[osx-basic::default]
-  #   includes:
-  #     - osx1012
-  #   attributes:
-  #     vsts_agent_test:
-  #       username: <%= ENV['BOX_USERNAME'] %>
-  #       vsts_url: <%= ENV['VSTS_URL'] %>
-  #       vsts_pool: <%= ENV['VSTS_POOL'] %>
-  #       vsts_token: <%= ENV['VSTS_TOKEN'] %>
