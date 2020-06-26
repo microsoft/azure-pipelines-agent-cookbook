@@ -1,117 +1,93 @@
 ---
 driver:
-  name: vagrant
+  name: azurerm
+  location: "westus2"
+  machine_size: "Standard_A4_v2"
+  explicit_resource_group_name: azure-pipelines-agent-cicd-rg
+  destroy_explicit_resource_group: true
+  destroy_resource_group_contents: true
 
 provisioner:
   name: chef_zero
   product_name: chef
+  product_version: 16
   chef_license: accept
   channel: stable
-  client_rb:
-    add_formatter: doc
+
+verifier:
+  name: inspec
+  sudo: true
+  reporter:
+    - cli
+    - junit:/tmp/%{suite}-%{platform}-inspec.xml
+  inspec_tests:
+    - test/integration/default
 
 platforms:
-  - name: debian8
-    driver_config:
-      box: debian/jessie64
-    provisioner:
-      require_chef_omnibus: 12.20.3
-
-  - name: debian9
-    driver_config:
-      box: debian/stretch64
-    provisioner:
-      require_chef_omnibus: 13.6.4
-
-  - name: ubuntu1604
-    driver_config:
-      box: ubuntu/xenial64
-    provisioner:
-      require_chef_omnibus: 13.6.4
-
-  - name: ubuntu1710
-    driver_config:
-      box: ubuntu/artful64
-    provisioner:
-      require_chef_omnibus: 13.6.4
-
-  - name: ubuntu1804
-    driver_config:
-      box: ubuntu/bionic64
-    provisioner:
-      require_chef_omnibus: 14.3.37
-
-  - name: centos7
-    driver_config:
-      box: centos/7
-    provisioner:
-      require_chef_omnibus: 12.20.3
-
-  - name: windows-2016
+  - name: debian-10
     driver:
-      box: StefanScherer/windows_2016
-      communicator: "winrm"
-      gui: true
+      image_urn: Debian:debian-10:10:latest
+      vm_name: buster-pipelines-agent-vm
 
-  # The following platforms are private boxes and are not available from the vagrant box repository
-  # Follow instructions provided in TESTING.md to create a box
-
-  # To a use a private box:
-  # 1. Create a box. To do so, follow the instructions in TESTING.md
-  # 2. Once you've added the vagrant box, modify this file to use it
-  # 3. In the 'suites' section of this file, list your box name(s) under 'includes' for the corresponding platform
-  # 4. Confirm your box shows up when running `vagrant box list` and `kitchen list` when in this cookbook directory
-
-  - name: osx1012
+  - name: ubuntu-18.04
     driver:
-      box: osx1012
-      username: <%= ENV['BOX_USERNAME'] %>
-    provisioner:
-      require_chef_omnibus: 13.6.4
+      image_urn: Canonical:UbuntuServer:18.04-LTS:latest
+      vm_name: bionic-pipelines-agent-vm
 
-  - name: windows10
-    driver_config:
-      guest: windows
-      communicator: "winrm"
-      box: win10x64-enterprise
-    provisioner:
-      require_chef_omnibus: 13.6.4
+  - name: ubuntu-20.04
+    driver:
+      image_urn: Canonical:UbuntuServer:20.04-LTS:latest
+      vm_name: focal-pipelines-agent-vm
 
-  - name: windows-2012-r2
+  - name: centos-7
     driver_config:
-      guest: windows
-      communicator: "winrm"
-      box: windows-2012-r2
-    provisioner:
-      require_chef_omnibus: 13.0.118
+      image_urn: OpenLogic:CentOS:7.5:latest
+
+  # - name: windows-2016
+  #   driver:
+  #     box: StefanScherer/windows_2016
+  #     communicator: "winrm"
+  #     gui: true
+  # - name: osx1012
+  #   driver:
+  #     box: osx1012
+  #     username: <%= ENV['BOX_USERNAME'] %>
+  # - name: windows10
+  #   driver_config:
+  #     guest: windows
+  #     communicator: "winrm"
+  #     box: win10x64-enterprise
+  # - name: windows-2012-r2
+  #   driver_config:
+  #     guest: windows
+  #     communicator: "winrm"
+  #     box: windows-2012-r2
 
 suites:
-  - name: windows-basic
-    run_list:
-      - recipe[windows-basic::default]
-    includes:
-      - windows10
-      - windows-2012-r2
-      - windows-2016
-    attributes:
-      vsts_agent_test:
-        username: <%= ENV['BOX_USERNAME'] %>
-        vsts_url: <%= ENV['VSTS_URL'] %>
-        vsts_pool: <%= ENV['VSTS_POOL'] %>
-        vsts_token: <%= ENV['VSTS_TOKEN'] %>
-        deployment_group_name: <%= ENV['VSTS_DEPLOYMENT_GROUP_NAME'] %>
-        deployment_group_project: <%= ENV['VSTS_DEPLOYMENT_GROUP_PROJECT'] %>
+  # - name: windows-basic
+  #   run_list:
+  #     - recipe[windows-basic::default]
+  #   includes:
+  #     - windows10
+  #     - windows-2012-r2
+  #     - windows-2016
+  #   attributes:
+  #     vsts_agent_test:
+  #       username: <%= ENV['BOX_USERNAME'] %>
+  #       vsts_url: <%= ENV['VSTS_URL'] %>
+  #       vsts_pool: <%= ENV['VSTS_POOL'] %>
+  #       vsts_token: <%= ENV['VSTS_TOKEN'] %>
+  #       deployment_group_name: <%= ENV['VSTS_DEPLOYMENT_GROUP_NAME'] %>
+  #       deployment_group_project: <%= ENV['VSTS_DEPLOYMENT_GROUP_PROJECT'] %>
 
   - name: linux-basic
     run_list:
       - recipe[linux-basic::default]
     includes:
-      - debian8
-      - debian9
-      - ubuntu1604
-      - ubuntu1710
-      - ubuntu1804
-      - centos7
+      - debian-10
+      - ubuntu-18.04
+      - ubuntu-20.04
+      - centos-7
 
     attributes:
       vsts_agent_test:
@@ -121,16 +97,14 @@ suites:
         vsts_token: <%= ENV['VSTS_TOKEN'] %>
         deployment_group_name: <%= ENV['VSTS_DEPLOYMENT_GROUP_NAME'] %>
         deployment_group_project: <%= ENV['VSTS_DEPLOYMENT_GROUP_PROJECT'] %>
-
-  - name: osx-basic
-    run_list:
-      - recipe[osx-basic::default]
-    includes:
-      - osx1012
-
-    attributes:
-      vsts_agent_test:
-        username: <%= ENV['BOX_USERNAME'] %>
-        vsts_url: <%= ENV['VSTS_URL'] %>
-        vsts_pool: <%= ENV['VSTS_POOL'] %>
-        vsts_token: <%= ENV['VSTS_TOKEN'] %>
+  # - name: osx-basic
+  #   run_list:
+  #     - recipe[osx-basic::default]
+  #   includes:
+  #     - osx1012
+  #   attributes:
+  #     vsts_agent_test:
+  #       username: <%= ENV['BOX_USERNAME'] %>
+  #       vsts_url: <%= ENV['VSTS_URL'] %>
+  #       vsts_pool: <%= ENV['VSTS_POOL'] %>
+  #       vsts_token: <%= ENV['VSTS_TOKEN'] %>
