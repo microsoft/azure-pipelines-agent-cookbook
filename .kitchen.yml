@@ -14,6 +14,9 @@ provisioner:
   chef_license: accept
   channel: stable
 
+transport:
+  ssh_key: ~/.ssh/id_kitchen-azurerm
+
 verifier:
   name: inspec
   sudo: true
