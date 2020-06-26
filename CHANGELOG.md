@@ -1,5 +1,24 @@
 # Azure Pipelines Agent Cookbook Changelog
 
+## [v3.2.0](https://github.com/Microsoft/azure-pipelines-agent-cookbook/tree/v3.2.0) - (2020-06-26)
+
+### Removed
+
+- Removed `Rakefile`
+- Removed `.foodcritic`
+- Removed `.rspec`
+- Removed `.rubocop.yml`
+
+### Changed
+
+- Cookstyle fixes for Chef 16
+- Updated line endings to `LF` for files that were marked as `CRLF`
+- Utilize `kitchen-azurerm` driver for Linux and Windows VM's
+
+### Added
+
+- Proxy support - Thanks @perryflynn! Closed #39.
+
 ## [v3.0.1](https://github.com/Microsoft/azure-pipelines-agent-cookbook/tree/v3.0.1) - (2018-09-29)
 
 ### Removed
