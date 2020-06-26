@@ -11,6 +11,7 @@
 
 ### Changed
 
+- Cookbook supports Chef Infra Client 14 or newer.
 - Cookstyle fixes for Chef 16
 - Updated line endings to `LF` for files that were marked as `CRLF`
 - Utilize `kitchen-azurerm` driver for Linux and Windows VM's
