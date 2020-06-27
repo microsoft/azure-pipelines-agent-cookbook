@@ -6,7 +6,7 @@ description      'Installs/Configures visualstudio team services build agents'
 source_url       'https://github.com/Microsoft/azure-pipelines-agent-cookbook'
 issues_url       'https://github.com/Microsoft/azure-pipelines-agent-cookbook/issues'
 chef_version     '>= 14'
-version          '3.2.0'
+version          '4.0.0'
 
 %w(ubuntu debian redhat centos mac_os_x windows).each do |operating_system|
   supports operating_system
