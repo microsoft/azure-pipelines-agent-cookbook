@@ -1,4 +1,4 @@
-name             'vsts_agent'
+name             'azure_pipelines_agent'
 maintainer       'Microsoft'
 maintainer_email 'eahanl@microsoft.com'
 license          'MIT'
