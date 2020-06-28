@@ -1,6 +1,5 @@
 module VSTS
   module Agent
-    # Helper methods for VSTS Build Agent installation
     module Helpers
       include Chef::DSL::PlatformIntrospection
 

@@ -5,7 +5,6 @@ require 'chef/dsl/platform_introspection'
 
 module VSTS
   module Agent
-    # The service operations for vsts_agent
     class Service
       include Windows::Helper
       include VSTS::Agent::Helpers
