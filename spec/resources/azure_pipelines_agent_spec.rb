@@ -5,9 +5,11 @@ describe 'installing azure pipelines agent with the default action' do
   platform 'ubuntu'
   context 'with the default action' do
     recipe do
-      azure_pipelines_agent 'node1'
+      azure_pipelines_agent 'node1' do
+        install_dir '/home/plumber/.azure/pipelines/agent'
+      end
     end
 
-    it { is_expected.to create_directory("#{ENV['HOME']}/azure/pipelines/agent") }
+    it { is_expected.to create_directory('/home/plumber/.azure/pipelines/agent') }
   end
 end
