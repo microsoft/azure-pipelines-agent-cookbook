@@ -42,9 +42,11 @@ pr:
       - chefignore
 
 jobs:
-  - job: Cookstyle
+  - job: cookstyle
+    displayName: Lint with Chef Cookstyle
     pool:
       vmImage: 'ubuntu-16.04'
     container: chef/chefworkstation:20.7.81
     steps:
       - script: cookstyle
+        displayName: Run cookstyle
