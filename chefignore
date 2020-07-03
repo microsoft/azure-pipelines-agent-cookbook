@@ -1,6 +1,6 @@
-# Put files/directories that should be ignored in this file when uploading
-# or sharing to the community site.
-# Lines that start with '# ' are comments.
+# Azure Pipelines #
+###################
+azure-pipelines.yml
 
 # OS generated files #
 ######################
@@ -42,7 +42,3 @@ Berksfile.lock
 #############
 CONTRIBUTING*
 CHANGELOG*
-
-# Travis #
-##########
-.travis.yml
