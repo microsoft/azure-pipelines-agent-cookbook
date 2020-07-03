@@ -1,10 +1,12 @@
-# Visual Studio Team Services Build and Release Agent Cookbook
+# Azure Pipelines Agent Cookbook
 
 [![Join the chat at https://gitter.im/Microsoft/vsts-agent-cookbook](https://badges.gitter.im/Microsoft/vsts-agent-cookbook.svg)](https://gitter.im/Microsoft/vsts-agent-cookbook?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://dev.azure.com/msftchef/Public/_apis/build/status/microsoft.azure-pipelines-agent-cookbook?branchName=master)](https://dev.azure.com/msftchef/Public/_build/latest?definitionId=1&branchName=master)
 [![Cookbook Version](https://img.shields.io/cookbook/v/vsts_agent.svg)](https://supermarket.chef.io/cookbooks/vsts_agent)
 
-Installs and configures Visual Studio Team Services [Build and Release Agent](https://github.com/Microsoft/vsts-agent/)
+Formerly Visual Studio Team Services Build and Release Agent Cookbook
+
+Installs and configures the cross-platform [build and release agent](https://github.com/Microsoft/azure-pipelines-agent) for Azure Pipelines and Team Foundation Server 2015 and beyond.
 
 Please check [Wiki](https://github.com/Microsoft/vsts-agent-cookbook/wiki) for more examples
 
