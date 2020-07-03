@@ -41,17 +41,7 @@ pr:
       - .gitignore
       - chefignore
 
-resources:
-  repositories:
-    - repository: templates
-      type: git
-      name: chef-pipelines-templates
-
 jobs:
-  - template: common.yml@templates
-    parameters:
-      kitchenFile: kitchen.yml
-      platforms:
-        - ubuntu1804
-      suites:
-        - linux-basic
+  - job: Cookstyle
+    pool: 
+      vmImage: 'ubuntu-latest'
