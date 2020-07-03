@@ -12,7 +12,7 @@ Please check [Wiki](https://github.com/Microsoft/vsts-agent-cookbook/wiki) for m
 
 ## Requirements
 
-- Chef 12.5.0 or higher
+- Chef 14 or higher
 
 ### Platforms
 
