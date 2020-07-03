@@ -43,6 +43,8 @@ pr:
 
 jobs:
   - job: Cookstyle
-    container: chef/chefworkstation
+    pool:
+      vmImage: 'ubuntu-16.04'
+    container: chef/chefworkstation:20.7.81
     steps:
       - script: cookstyle
