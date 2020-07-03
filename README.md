@@ -1,20 +1,21 @@
-Visual Studio Team Services Build and Release Agent Cookbook
-================
+# Visual Studio Team Services Build and Release Agent Cookbook
 
 [![Join the chat at https://gitter.im/Microsoft/vsts-agent-cookbook](https://badges.gitter.im/Microsoft/vsts-agent-cookbook.svg)](https://gitter.im/Microsoft/vsts-agent-cookbook?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](https://travis-ci.org/Microsoft/vsts-agent-cookbook.svg?branch=master)](https://travis-ci.org/Microsoft/vsts-agent-cookbook)
+[![Build Status](https://dev.azure.com/msftchef/Public/_apis/build/status/microsoft.azure-pipelines-agent-cookbook?branchName=master)](https://dev.azure.com/msftchef/Public/_build/latest?definitionId=1&branchName=master)
 [![Cookbook Version](https://img.shields.io/cookbook/v/vsts_agent.svg)](https://supermarket.chef.io/cookbooks/vsts_agent)
 
 Installs and configures Visual Studio Team Services [Build and Release Agent](https://github.com/Microsoft/vsts-agent/)
 
 Please check [Wiki](https://github.com/Microsoft/vsts-agent-cookbook/wiki) for more examples
 
-Requirements
-------------
+## Requirements
+
 - Chef 12.5.0 or higher
 
 ### Platforms
+
 The following platforms are tested and supported:
+
 - Debian 8 x64 (Jessie)
 - Debian 9 x64 (Stretch)
 - Ubuntu 16.04 (Xenial Xerus)
@@ -26,28 +27,32 @@ The following platforms are tested and supported:
 - OS X 10.10.5
 - OS X 10.11.4
 
-Attributes
-----------
-* `node['vsts_agent']['binary']['version']` - set version of package to install
-* `node['vsts_agent']['prerequisites']['redhat']['install']` - control dependencies installation for redhat based distros(redhat, centos etc.) . Default true
-* `node['vsts_agent']['prerequisites']['debian']['install']` - control dependencies installation for debian based distros(debian, ubuntu etc.). Default true
+## Attributes
 
-Resource/Provider
------------------
+- `node['vsts_agent']['binary']['version']` - set version of package to install
+- `node['vsts_agent']['prerequisites']['redhat']['install']` - control dependencies installation for redhat based distros(redhat, centos etc.) . Default true
+- `node['vsts_agent']['prerequisites']['debian']['install']` - control dependencies installation for debian based distros(debian, ubuntu etc.). Default true
+
+## Resource/Provider
+
 ### vsts_agent
+
 This resource installs and configures the vsts build and release agent
+
 #### Actions
+
 - `:install`: Install and configure the agent
 - `:remove`: Remove the agent and unregister it from VSTS
 - `:restart`: Restart the agent service
 
 #### Parameters
+
 - `agent_name`: name attribute. The name of the vsts agent
 - `deploymentGroup`: deploy the agent into the [deployment group](https://docs.microsoft.com/en-us/vsts/pipelines/release/deployment-groups/?view=vsts). Default '`false`'
-  * `deploymentGroupName`: name of the deployment group. Only applies if `deploymentGroup==true`
-  * `projectName`: name of the vsts/tfs project where to deploy the agent. Only applies if `deploymentGroup==true`
-  * `collectionName`: name of the vsts/tfs collection where to deploy the agent. Only applies if `deploymentGroup==true`. Dafault value is `DefaultCollection`
-  * `deploymentGroupTags`: a comma-separated list of tags to set for the agent. Only applies if `deploymentGroup==true`
+  - `deploymentGroupName`: name of the deployment group. Only applies if `deploymentGroup==true`
+  - `projectName`: name of the vsts/tfs project where to deploy the agent. Only applies if `deploymentGroup==true`
+  - `collectionName`: name of the vsts/tfs collection where to deploy the agent. Only applies if `deploymentGroup==true`. Dafault value is `DefaultCollection`
+  - `deploymentGroupTags`: a comma-separated list of tags to set for the agent. Only applies if `deploymentGroup==true`
 - `version`: an agent version to install. Default version from an attribute
 - `install_dir`: A target directory to install the vsts agent
 - `path`: Overwrite system PATH environment variable values. Linux and macOS only
@@ -60,10 +65,10 @@ This resource installs and configures the vsts build and release agent
 - `vsts_url`: url to VSTS instance
 - `vsts_pool`: A pool to connect an agent
 - `vsts_auth`: Authentication type. Default PAT auth. Valid options are:
-  * PAT - Personal Access Token (requires vsts_token),
-  * Negotiate - Kerberos or NTLM (requires vsts_username and vsts_password),
-  * ALT - Alternate Credentials (requires vsts_username and vsts_password),
-  * Integrated - Windows default credentials (doesn't require any credentials).
+  - PAT - Personal Access Token (requires vsts_token),
+  - Negotiate - Kerberos or NTLM (requires vsts_username and vsts_password),
+  - ALT - Alternate Credentials (requires vsts_username and vsts_password),
+  - Integrated - Windows default credentials (doesn't require any credentials).
 - `vsts_token`: A personal access token for VSTS. Used with PAT auth type. [See](http://roadtoalm.com/2015/07/22/using-personal-access-tokens-to-access-visual-studio-online/)
 - `vsts_username`: A user to connect to VSTS. Used with Negotiate and ALT auth
 - `vsts_password`: A user to connect to VSTS. Used with Negotiate and ALT auth
@@ -72,6 +77,7 @@ This resource installs and configures the vsts build and release agent
 - `proxy_sslcacert`: Set the root certificate which is used for communicating through the forward proxy (example value: `/usr/local/share/ca-certificates/Internal-CA.crt`)
 
 #### Examples
+
 Install, configure, restart and remove a build agent.
 Check [windows](test/cookbooks/windows-basic/recipes/default.rb), [linux](test/cookbooks/linux-basic/recipes/default.rb) or [osx](test/cookbooks/osx-basic/recipes/default.rb) tests for more examples.
 
@@ -132,4 +138,5 @@ end
 ```
 
 # How to contribute
+
 Check [Contribution Guide](CONTRIBUTING.md) and [Testing Guide](TESTING.md)
