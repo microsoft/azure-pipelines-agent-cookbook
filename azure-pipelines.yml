@@ -52,13 +52,6 @@ jobs:
     parameters:
       kitchenFile: kitchen.yml
       platforms:
-        - mojave
-        - debian8
-        - debian9
-        - ubuntu1604
-        - ubuntu1710
         - ubuntu1804
-        - centos7
       suites:
         - linux-basic
-        - macos-basic
