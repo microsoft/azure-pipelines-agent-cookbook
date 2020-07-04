@@ -65,3 +65,12 @@ Please remember to do the following:
 - [ ] Simplify your code around the issue to better isolate the problem
 
 Don't feel bad if the developers can't reproduce the issue right away. They will simply ask for more information!
+
+## Contributing Fixes
+
+If you are interested in writing code to fix issues,
+please see [How to Contribute](https://github.com/Microsoft/azure-pipelines-agent-cookbook/wiki/How-to-Contribute) in the wiki.
+
+# Thank You!
+
+Your contributions to open source, large or small, make great projects like this possible. Thank you for taking the time to contribute.
