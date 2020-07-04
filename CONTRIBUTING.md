@@ -29,3 +29,39 @@ If you find your issue already exists, make relevant comments and add your [reac
 - 👎 - downvote
 
 If you cannot find an existing issue that describes your bug or feature, create a new issue using the guidelines below.
+
+### Writing Good Bug Reports and Feature Requests
+
+- File a single issue per problem and feature request. Do not enumerate multiple bugs or feature requests in the same issue.
+
+- Do not add your issue as a comment to an existing issue unless it's for the identical input. Many issues look similar, but have different causes.
+
+- The more information you can provide, the more likely someone will be successful at reproducing the issue and finding a fix.
+
+Please include the following with each issue:
+
+- Version of Chef Infra Client
+
+- Your operating system
+
+- Reproducible steps (1... 2... 3...) that cause the issue
+
+- What you expected to see, versus what you actually saw
+
+- A code snippet that demonstrates the issue or a link to a code repository the developers can easily pull down to recreate the issue locally
+
+  - **Note:** Because the developers need to copy and paste the code snippet, including a code snippet as a media file (i.e. .gif) is not sufficient.
+
+- Errors from the client run
+
+### Final Checklist
+
+Please remember to do the following:
+
+- [ ] Search the issue repository to ensure your report is a new issue
+
+- [ ] Recreate the issue
+
+- [ ] Simplify your code around the issue to better isolate the problem
+
+Don't feel bad if the developers can't reproduce the issue right away. They will simply ask for more information!
