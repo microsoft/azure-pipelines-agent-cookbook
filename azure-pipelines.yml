@@ -1,0 +1,52 @@
+name: $(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+      - develop
+      - feature/*
+      - release/*
+      - hotfix/*
+  paths:
+    exclude:
+      - LICENSE
+      - README.md
+      - CHANGELOG.md
+      - TESTING.md
+      - CONTRIBUTING.md
+      - .foodcritic
+      - .rspec
+      - .rubocop.yml
+      - .gitignore
+      - chefignore
+
+pr:
+  branches:
+    include:
+      - master
+      - develop
+      - release/*
+  paths:
+    exclude:
+      - LICENSE
+      - README.md
+      - CHANGELOG.md
+      - TESTING.md
+      - CONTRIBUTING.md
+      - .foodcritic
+      - .rspec
+      - .rubocop.yml
+      - .gitignore
+      - chefignore
+
+jobs:
+  - job: cookstyle
+    displayName: Lint with Chef Cookstyle
+    pool:
+      vmImage: 'ubuntu-16.04'
+    container: chef/chefworkstation:20.7.81
+    steps:
+      - script: cookstyle
+        displayName: Run cookstyle
