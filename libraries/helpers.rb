@@ -13,7 +13,14 @@ module VSTS
       end
 
       def download_url(version)
-        url = Chef.run_context.node['vsts_agent']['binary']['url']
+        url = case node['platform_family']
+              when 'windows'
+                'https://vstsagentpackage.azureedge.net/agent/%s/vsts-agent-win-x64-%s.zip'
+              when 'debian', 'rhel'
+                'https://vstsagentpackage.azureedge.net/agent/%s/vsts-agent-linux-x64-%s.tar.gz'
+              when 'mac_os_x'
+                'https://vstsagentpackage.azureedge.net/agent/%s/vsts-agent-osx-x64-%s.tar.gz'
+              end
         url.gsub '%s', version
       end
 
