@@ -6,7 +6,6 @@ require 'chef/dsl/platform_introspection'
 module VSTS
   module Agent
     class Service
-      include Windows::Helper
       include VSTS::Agent::Helpers
       include Chef::DSL::PlatformIntrospection
 
