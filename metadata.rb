@@ -12,6 +12,5 @@ version          '3.2.0'
   supports operating_system
 end
 
-depends 'windows'
 depends 'ark'
 depends 'seven_zip', '>= 2.0.0'
